@@ -120,14 +120,7 @@ const projects = [
       'Deep learning models trained to catch patterns the eye misses.',
     note:
       'Presented as a screening research project, not a clinical diagnosis tool.',
-    stack: [
-      'Python',
-      'Flask',
-      'Vue',
-      'PyTorch',
-      'OpenCV',
-      'TensorFlow',
-    ],
+    stack: ['Python', 'Flask', 'Vue', 'PyTorch', 'OpenCV', 'TensorFlow'],
     image: '/images/gscan1.png',
     imageAlt: 'GraphiScan application screenshot',
     tone: 'blue',
@@ -140,8 +133,9 @@ const projects = [
     period: 'Third year',
     subtitle: 'Technology with communication in mind.',
     description:
-      'Built for clearer communication, one phrase at a time.',
-    note: '',
+      'An assistive app for people with cleft palate, turning speech into clearer, easier-to-understand communication.',
+    note:
+      'Built with accessibility at the core, not just as an add-on feature.',
     stack: ['Flutter', 'Firebase'],
     image: '/images/cleft1.png',
     imageAlt: 'CleftTune mobile application screenshot',
@@ -155,8 +149,9 @@ const projects = [
     period: 'Second year',
     subtitle: 'Building beyond the interface.',
     description:
-      'A full-stack build, from database to interface.',
-    note: '',
+      'A travel platform connecting explorers to local wonders and destinations, with easy, streamlined booking built in.',
+    note:
+      'Built solo, end-to-end — from the database up to the booking flow.',
     stack: ['Laravel', 'PHP', 'MySQL'],
     image: '/images/mindayo1.png',
     imageAlt: 'Mindayo web application screenshot',

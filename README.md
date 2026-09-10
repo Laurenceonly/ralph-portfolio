@@ -2,7 +2,7 @@
 
 Personal portfolio site for **Ralph Laurence C. Sayo**, a fourth-year BSIT student. Built with Nuxt 3, showcasing academic and capstone projects, technical skills, certifications, and contact info.
 
-🔗 **Live site:** https://ralph-portfolio-j6122bifi-knight-labs1.vercel.app/
+🔗 **Live site:** https://ralph-portfolio-n03h9el6l-knight-labs1.vercel.app/
 
 ---
 

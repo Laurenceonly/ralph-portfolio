@@ -1,75 +1,69 @@
-# Nuxt Minimal Starter
+# Ralph Laurence — Developer Portfolio
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Personal portfolio site for **Ralph Laurence C. Sayo**, a fourth-year BSIT student. Built with Nuxt 3, showcasing academic and capstone projects, technical skills, certifications, and contact info.
 
-## Setup
+🔗 **Live site:** _add your Vercel URL here after deploying_
 
-Make sure to install dependencies:
+---
+
+## Features
+
+- Animated hero and scroll-triggered reveals (GSAP + ScrollTrigger)
+- Swipeable featured-project carousel (GraphiScan, CleftTune, Mindayo)
+- Expandable project archive with deep-linkable entries
+- Interactive skill explorer (Web / Mobile & AI / Foundations & Tools)
+- Certifications list with linked PDF certificates
+- Light/dark theme toggle with a circular view-transition animation
+- Fully responsive (desktop → tablet → mobile)
+
+## Tech Stack
+
+- [Nuxt 3](https://nuxt.com/) / Vue 3 (`<script setup>`, Composition API)
+- [GSAP](https://gsap.com/) + ScrollTrigger for animation
+- [Simple Icons](https://simpleicons.org/) CDN for tech logos
+- Plain CSS with custom properties (no Tailwind/UI kit)
+
+## Getting Started
+
+Install dependencies:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+Run the dev server (defaults to `http://localhost:3000`):
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+Build for production:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Preview the production build locally:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Project Structure Notes
+
+- Certificate PDFs live in `public/certificates/` and are referenced by `pdfUrl` in the certifications data.
+- Project screenshots live in `public/images/` and are referenced by `image` in the projects data.
+- Fonts (Space Grotesk) and tech icons load from CDNs (`fonts.googleapis.com`, `cdn.jsdelivr.net`) — no local font files needed.
+
+## Deployment
+
+This project deploys cleanly to [Vercel](https://vercel.com) with zero configuration (Nuxt is auto-detected). See deployment steps below.
+
+## Contact
+
+- Email: dreyast.laurent@gmail.com
+- GitHub: [@Laurenceonly](https://github.com/Laurenceonly)
+
+## License
+
+© 2026 Ralph Laurence C. Sayo. All rights reserved.

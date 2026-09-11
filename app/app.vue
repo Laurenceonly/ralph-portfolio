@@ -1326,14 +1326,14 @@ onBeforeUnmount(() => {
 
           <div class="about-copy">
             <p>
-              I’m Ralph Laurence C. Sayo, a fourth-year Bachelor of
+              I'm Ralph Laurence C. Sayo, a fourth-year Bachelor of
               Science in Information Technology student.
             </p>
 
             <p>
               My interests span software development, mobile
               applications, networking, and machine learning. Through
-              academic projects, capstone work, and self-learning, I’m
+              academic projects, capstone work, and self-learning, I'm
               exploring how these disciplines can solve practical
               problems.
             </p>
@@ -1554,7 +1554,7 @@ onBeforeUnmount(() => {
       >
         <div data-reveal>
           <p class="eyebrow">
-            04 / WHAT’S NEXT?
+            04 / WHAT'S NEXT?
           </p>
 
           <h2 id="contact-title">

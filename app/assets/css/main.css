@@ -383,8 +383,14 @@ summary {
    ever visible at full opacity at a time, toggled by the existing
    `.light` root class. Sits behind the title/eyebrow (negative
    z-index inside the hero's `isolation: isolate` context, same trick
-   `.hero-orbit` already uses) and fades to transparent at the bottom
-   edge so it blends into the section instead of hard-cutting off.
+   `.hero-orbit` already uses).
+
+   Mask fade pushed down to 97% (was 82%, then 93%) so only the very
+   last sliver of the bottom hem softens — basically imperceptible —
+   instead of cutting into the torso, which is what was reading as a
+   gray "shadow/cloud" on the belly in light mode (invisible on dark
+   because it faded dark-on-dark). Percentage-based, so it stays
+   correct at every screen size.
 ---------------------------------------- */
 
 .hero-portrait-wrap {
@@ -404,8 +410,8 @@ summary {
   height: 100%;
   object-fit: contain;
   object-position: bottom center;
-    -webkit-mask-image: linear-gradient(to bottom, black 93%, transparent 100%);
-          mask-image: linear-gradient(to bottom, black 93%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 97%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 97%, transparent 100%);
   transition: opacity 500ms var(--ease-out);
 }
 
@@ -524,6 +530,10 @@ summary {
 
 /* ========================================
    SECTION HEADINGS
+
+   All section headings (Work, About, Process, Contact) now share
+   this single scale/weight/tracking so sizing reads consistently
+   across the whole site.
 ======================================== */
 
 .work-section {
@@ -1265,19 +1275,37 @@ summary {
   animation-delay: calc(var(--token-index) * 35ms);
 }
 
-/* Tech-stack icons — sized a touch larger than the base 14px so the
-   toolkit logos read clearly without dominating the token chips.
-   Shared by the toolkit list, the archive list, and (now) the
-   featured-project carousel's tech list. */
-.token-icon {
-  --tech-icon: none;
+/* Tech-stack icons — brand logos loaded from Simple Icons as a
+   background-image reading the --tech-icon custom property (set
+   inline per icon).
 
+   Simple Icons SVGs ship with no `fill` set, so their default is
+   plain black. That's fine on the light theme's white/near-white
+   surfaces, but on the dark theme's near-black surfaces
+   (--surface: #171a1e, --chip: rgb(255 255 255 / 4%)) a black icon
+   is effectively invisible — which is the "weird icons in dark
+   mode" bug. Since these come from an external SVG file (not
+   inline markup), `currentColor` can't reach into them, so we
+   can't just recolor via `fill`. Instead we invert + brighten the
+   rendered icon in dark mode, and turn the filter off again in
+   light mode where the original black rendering already reads
+   correctly. Shared by the toolkit list, the archive list, the
+   featured-project carousel's tech list, and certifications.
+*/
+.token-icon {
   flex: 0 0 auto;
   width: 18px;
   height: 18px;
-  background-color: currentColor;
-  mask: var(--tech-icon) no-repeat center / contain;
-  -webkit-mask: var(--tech-icon) no-repeat center / contain;
+  background-image: var(--tech-icon);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  filter: invert(1) brightness(1.8);
+  transition: filter 250ms ease;
+}
+
+.light .token-icon {
+  filter: none;
 }
 
 .token-icon-initial {
@@ -1289,6 +1317,10 @@ summary {
   mask: none;
   -webkit-mask: none;
   font-size: 9px;
+  /* This is rendered text (initials), not an icon image — undo the
+     dark-mode invert filter above so the glyph keeps using the
+     theme's normal text color instead of getting flipped too. */
+  filter: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1360,7 +1392,7 @@ summary {
   width: 26px;
   height: 26px;
   flex: 0 0 auto;
-  color: var(--accent);
+  object-fit: contain;
 }
 
 .credential-text {
@@ -1444,7 +1476,12 @@ summary {
 }
 
 /* ========================================
-   CONTACT — LARGE CLOSING STATEMENT
+   CONTACT — CLOSING STATEMENT
+
+   Heading now shares the same scale/weight/tracking as every other
+   section heading (.section-heading h2 / .about-intro h2) instead
+   of its own oversized clamp — keeps sizing consistent site-wide.
+   Arrow scaled down to match.
 ======================================== */
 
 .contact-section {
@@ -1485,7 +1522,7 @@ summary {
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-    width: clamp(48px, 6vw, 84px);
+  width: clamp(48px, 6vw, 84px);
   aspect-ratio: 1;
   border: 1px solid var(--accent);
   border-radius: 50%;
@@ -1698,6 +1735,7 @@ summary {
 }
 
 .social-link {
+  position: relative;
   display: grid;
   place-items: center;
   width: 84px;
@@ -1714,14 +1752,25 @@ summary {
     color 250ms ease;
 }
 
+/* Social icons (GitHub, Facebook, Instagram, email) — same deal as
+   .token-icon above: these are black-by-default SVGs painted via
+   background-image, so they'd vanish against the dark theme's
+   near-black surfaces without an explicit recolor. Invert + brighten
+   in dark mode, switch it off in light mode. */
 .social-link-icon {
-  --tech-icon: none;
-
   width: 36px;
   height: 36px;
-  background-color: currentColor;
-  mask: var(--tech-icon) no-repeat center / contain;
-  -webkit-mask: var(--tech-icon) no-repeat center / contain;
+  background-image: var(--tech-icon);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  grid-area: 1 / 1;
+  filter: invert(1) brightness(1.8);
+  transition: filter 250ms ease;
+}
+
+.light .social-link-icon {
+  filter: none;
 }
 
 .social-link:focus-visible {
@@ -2333,7 +2382,7 @@ summary {
     height: 11px;
   }
 
-   .contact-arrow {
+  .contact-arrow {
     width: 42px;
     font-size: 26px;
   }

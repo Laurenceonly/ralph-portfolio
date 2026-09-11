@@ -404,8 +404,8 @@ summary {
   height: 100%;
   object-fit: contain;
   object-position: bottom center;
-  -webkit-mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
-          mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 93%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 93%, transparent 100%);
   transition: opacity 500ms var(--ease-out);
 }
 
@@ -1469,10 +1469,10 @@ summary {
 }
 
 .contact-section h2 {
-  font-size: clamp(56px, 9.5vw, 134px);
+  font-size: clamp(42px, 5.4vw, 76px);
   font-weight: 500;
-  line-height: 1.06;
-  letter-spacing: -0.075em;
+  line-height: 1.08;
+  letter-spacing: -0.06em;
 }
 
 .contact-last-line {
@@ -1485,13 +1485,13 @@ summary {
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  width: clamp(66px, 9vw, 126px);
+    width: clamp(48px, 6vw, 84px);
   aspect-ratio: 1;
   border: 1px solid var(--accent);
   border-radius: 50%;
   color: var(--accent);
   font-family: var(--body);
-  font-size: clamp(40px, 6vw, 84px);
+  font-size: clamp(28px, 4vw, 48px);
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0;
@@ -2217,7 +2217,7 @@ summary {
   }
 
   .contact-section h2 {
-    font-size: clamp(40px, 10.5vw, 76px);
+    font-size: clamp(36px, 8.5vw, 54px);
   }
 
   .contact-last-line {
@@ -2225,8 +2225,8 @@ summary {
   }
 
   .contact-arrow {
-    width: 58px;
-    font-size: 38px;
+    width: 48px;
+    font-size: 30px;
   }
 
   .contact-columns {
@@ -2333,9 +2333,9 @@ summary {
     height: 11px;
   }
 
-  .contact-arrow {
-    width: 50px;
-    font-size: 32px;
+   .contact-arrow {
+    width: 42px;
+    font-size: 26px;
   }
 
   .site-footer {

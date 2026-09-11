@@ -4,6 +4,7 @@ import {
   nextTick,
   onBeforeUnmount,
   onMounted,
+  reactive,
   ref,
 } from 'vue'
 
@@ -24,6 +25,49 @@ const email = 'dreyast.laurent@gmail.com'
 ======================================== */
 
 useHead({
+  htmlAttrs: {
+    lang: 'en',
+  },
+  title: 'Ralph Laurence Sayo — Full-Stack & Mobile Developer',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Portfolio of Ralph Laurence C. Sayo — a full-stack and mobile developer and freelance visual editor. Projects in web, mobile, and AI, including the GraphiScan dysgraphia-screening capstone.',
+    },
+    { name: 'theme-color', content: '#0e1012' },
+
+    // Open Graph — controls the preview card when this link is
+    // shared on LinkedIn, Facebook, Slack, Discord, etc.
+    { property: 'og:type', content: 'website' },
+    {
+      property: 'og:title',
+      content: 'Ralph Laurence Sayo — Full-Stack & Mobile Developer',
+    },
+    {
+      property: 'og:description',
+      content:
+        'Full-stack and mobile developer and freelance visual editor. Projects in web, mobile, and AI, including the GraphiScan dysgraphia-screening capstone.',
+    },
+    // TODO: replace with your real deployed domain once you have one.
+    { property: 'og:url', content: 'https://ralphlaurence.dev' },
+    // TODO: add a 1200x630 preview image at this path (public/images/og-cover.png).
+    { property: 'og:image', content: '/images/og-cover.png' },
+
+    // Twitter/X card — falls back to the Open Graph tags above if omitted,
+    // but summary_large_image needs to be set explicitly.
+    { name: 'twitter:card', content: 'summary_large_image' },
+    {
+      name: 'twitter:title',
+      content: 'Ralph Laurence Sayo — Full-Stack & Mobile Developer',
+    },
+    {
+      name: 'twitter:description',
+      content:
+        'Full-stack and mobile developer and freelance visual editor. Projects in web, mobile, and AI.',
+    },
+    { name: 'twitter:image', content: '/images/og-cover.png' },
+  ],
   link: [
     { rel: 'preconnect', href: 'https://cdn.jsdelivr.net' },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -32,6 +76,12 @@ useHead({
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap',
     },
+    // TODO: replace with your real deployed domain once you have one.
+    { rel: 'canonical', href: 'https://ralphlaurence.dev' },
+    // TODO: drop a favicon.svg (and a 180x180 apple-touch-icon.png,
+    // both in /public) — browsers/tabs currently show no icon.
+    { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+    { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
   ],
 })
 
@@ -221,6 +271,11 @@ const skillGroups = [
     ],
   },
   {
+    title: 'Design & Editing',
+    description: 'Visual editing for posters, tarpaulins, and event materials.',
+    skills: ['CapCut', 'Premiere Pro', 'Canva'],
+  },
+  {
     title: 'Foundations & tools',
     description: 'The tools behind the development process.',
     skills: [
@@ -296,6 +351,10 @@ const techIconSlugs: Record<string, string> = {
   Figma: 'figma',
   'Cisco Networking': 'cisco',
   NetBeans: 'apachenetbeanside',
+  'Premiere Pro': 'adobepremierepro',
+  Canva: 'canva',
+  // No public brand mark available for CapCut on Simple Icons —
+  // falls back to initials ("CA") via techInitials() below.
 }
 
 function techIconUrl(tech: string) {
@@ -424,7 +483,27 @@ const activeSkillGroup = computed(
 
 const socialIconBase = 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons'
 
-const socialLinks = [
+// Rendered with the same CSS-mask technique as the brand icons above
+// (background-color: currentColor + mask), instead of an inline SVG
+// with `fill`, so the color and ink weight match exactly — no more
+// "greyer" mail icon next to the GitHub/Facebook/Instagram marks.
+const mailIconUrl = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.75 5.25h16.5c.966 0 1.75.784 1.75 1.75v10a1.75 1.75 0 0 1-1.75 1.75H3.75A1.75 1.75 0 0 1 2 17V7c0-.966.784-1.75 1.75-1.75Zm.4 1.5L12 12.15l7.85-5.4H4.15ZM20.5 8.9l-7.98 5.49a.9.9 0 0 1-1.04 0L3.5 8.9V17c0 .138.112.25.25.25h16.5a.25.25 0 0 0 .25-.25V8.9Z"/></svg>',
+)}`
+
+const mailCopiedIconUrl = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.55 17.15 4.4 12l1.5-1.5 3.65 3.65L18.1 5.6l1.5 1.5z"/></svg>',
+)}`
+
+type SocialLink = {
+  name: string
+  icon: string | null
+  href?: string
+  external?: boolean
+  type?: 'copy'
+}
+
+const socialLinks: SocialLink[] = [
   {
     name: 'GitHub',
     href: 'https://github.com/Laurenceonly',
@@ -433,9 +512,9 @@ const socialLinks = [
   },
   {
     name: 'Email',
-    href: `mailto:${email}`,
-    external: false,
-    // No brand mark for "email" itself — rendered as a hand-drawn envelope below.
+    // Copies the address instead of opening mailto:, which gets scraped by bots.
+    // See copyEmail() below — rendered as a hand-drawn envelope/checkmark.
+    type: 'copy',
     icon: null,
   },
   {
@@ -451,6 +530,95 @@ const socialLinks = [
     icon: `${socialIconBase}/instagram.svg`,
   },
 ]
+
+const emailCopied = ref(false)
+let emailCopyTimer: ReturnType<typeof setTimeout> | undefined
+
+async function copyEmail() {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(email)
+    } else {
+      // Fallback for browsers/contexts without the async Clipboard API.
+      const temp = document.createElement('textarea')
+      temp.value = email
+      temp.style.position = 'fixed'
+      temp.style.opacity = '0'
+      document.body.appendChild(temp)
+      temp.focus()
+      temp.select()
+      document.execCommand('copy')
+      document.body.removeChild(temp)
+    }
+
+    emailCopied.value = true
+    clearTimeout(emailCopyTimer)
+    emailCopyTimer = setTimeout(() => {
+      emailCopied.value = false
+    }, 2200)
+  } catch (error) {
+    console.warn('Could not copy email to clipboard.', error)
+  }
+}
+
+/* ========================================
+  CONTACT FORM — FORMSPREE
+======================================== */
+
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xnpqwgor'
+
+const contactForm = reactive({
+  name: '',
+  email: '',
+  message: '',
+})
+
+type FormStatus = 'idle' | 'sending' | 'success' | 'error'
+
+const formStatus = ref<FormStatus>('idle')
+const formErrorMessage = ref('')
+
+async function submitContactForm() {
+  if (formStatus.value === 'sending') return
+
+  formStatus.value = 'sending'
+  formErrorMessage.value = ''
+
+  try {
+    const response = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        name: contactForm.name,
+        email: contactForm.email,
+        message: contactForm.message,
+      }),
+    })
+
+    if (response.ok) {
+      formStatus.value = 'success'
+      contactForm.name = ''
+      contactForm.email = ''
+      contactForm.message = ''
+      return
+    }
+
+    const data = await response.json().catch(() => null)
+
+    formErrorMessage.value =
+      data?.errors?.[0]?.message ??
+      'Something went wrong sending that — try again, or email me directly.'
+    formStatus.value = 'error'
+  } catch (error) {
+    console.warn('Contact form submission failed.', error)
+    formErrorMessage.value =
+      'Could not reach the server — check your connection and try again.'
+    formStatus.value = 'error'
+  }
+}
 
 /* ========================================
   POINTER-RESPONSIVE PROJECT IMAGES
@@ -579,6 +747,15 @@ onMounted(async () => {
           '-=0.35',
         )
         .from(
+          select('.hero-portrait-wrap'),
+          {
+            opacity: 0,
+            y: 24,
+            duration: 0.9,
+          },
+          '-=0.9',
+        )
+        .from(
           select('.hero-bottom > *'),
           {
             y: 28,
@@ -660,6 +837,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   disposed = true
   clearTimeout(pulseTimer)
+  clearTimeout(emailCopyTimer)
   if (carouselScrollRaf) cancelAnimationFrame(carouselScrollRaf)
   cleanupMotion?.()
 })
@@ -750,9 +928,43 @@ onBeforeUnmount(() => {
       >
         <div class="hero-orbit" aria-hidden="true"></div>
 
+        <!--
+          Hero portrait — two pre-rendered images swapped purely via CSS
+          opacity based on the existing `.light` root class (no JS/watchers
+          needed, same pattern as every other themed element on the site).
+
+          ralph1.png = full color cutout  -> shown in LIGHT mode
+          ralph2.png = grayscale cutout   -> shown in DARK mode (default)
+
+          Purely decorative (the name is already announced via the h1's
+          aria-label below), so it's aria-hidden with empty alt text.
+        -->
+        <div class="hero-portrait-wrap" aria-hidden="true">
+          <img
+            class="hero-portrait hero-portrait-mono"
+            src="/images/ralph2.png"
+            alt=""
+            width="1000"
+            height="1235"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+
+          <img
+            class="hero-portrait hero-portrait-color"
+            src="/images/ralph1.png"
+            alt=""
+            width="1000"
+            height="1235"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+
         <p class="eyebrow hero-eyebrow">
           <span class="status-dot" aria-hidden="true"></span>
-          Fourth-year BSIT student / Developer portfolio
+          Full-Stack &amp; Mobile Developer · Freelance Visual Editor
         </p>
 
         <h1
@@ -782,8 +994,10 @@ onBeforeUnmount(() => {
 
           <div class="hero-intro">
             <p>
-              I explore web, mobile, and AI-powered applications—turning
-              what I learn into things you can actually use.
+              I build web and mobile applications — and design posters,
+              tarpaulins, and invitations for churches and events on the
+              side. Different mediums, same instinct: solve the problem
+              in front of me.
             </p>
 
             <a class="text-link" href="#work">
@@ -1100,6 +1314,11 @@ onBeforeUnmount(() => {
             02 / THE PERSON BEHIND THE WORK
           </p>
 
+          <p class="eyebrow muted now-line">
+            NOW — Sept 2026: Wrapping up capstone (GraphiScan), building
+            GitHub history, open to dev + design work.
+          </p>
+
           <h2 id="about-title">
             Still learning.<br />
             <span class="muted">Always building.</span>
@@ -1354,51 +1573,146 @@ onBeforeUnmount(() => {
             </span>
           </h2>
 
-          <div class="contact-bottom">
-            <div class="social-links-group">
-              <p class="mono muted social-links-label">
-                Social links
+          <div class="contact-columns">
+            <form
+              class="contact-form"
+              novalidate
+              @submit.prevent="submitContactForm"
+            >
+              <p class="mono muted contact-form-label">
+                Send a message
               </p>
 
-              <div class="social-links-row">
-                <a
-                  v-for="link in socialLinks"
-                  :key="link.name"
-                  class="social-link"
-                  :href="link.href"
-                  :target="link.external ? '_blank' : undefined"
-                  :rel="link.external ? 'noopener noreferrer' : undefined"
-                  :aria-label="link.name"
-                >
-                  <span
-                    v-if="link.icon"
-                    class="social-link-icon"
-                    :style="{ '--tech-icon': `url('${link.icon}')` }"
-                  />
+              <div class="form-field">
+                <label class="form-label mono" for="contact-name">
+                  Name
+                </label>
 
-                  <svg
-                    v-else
-                    class="social-link-icon social-link-icon-svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <rect x="3" y="5" width="18" height="14" rx="2" />
-                    <path d="m4 7 8 6 8-6" />
-                  </svg>
-                </a>
+                <input
+                  id="contact-name"
+                  v-model="contactForm.name"
+                  class="form-input"
+                  type="text"
+                  name="name"
+                  autocomplete="name"
+                  required
+                />
               </div>
-            </div>
 
-            <p>
-              For opportunities, collaborations,<br />
-              or a conversation about building things —<br />
-              these are my socials, feel free to reach out.
-            </p>
+              <div class="form-field">
+                <label class="form-label mono" for="contact-email">
+                  Email
+                </label>
+
+                <input
+                  id="contact-email"
+                  v-model="contactForm.email"
+                  class="form-input"
+                  type="email"
+                  name="email"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label mono" for="contact-message">
+                  Message
+                </label>
+
+                <textarea
+                  id="contact-message"
+                  v-model="contactForm.message"
+                  class="form-input form-textarea"
+                  name="message"
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  class="form-submit"
+                  :disabled="formStatus === 'sending'"
+                >
+                  {{ formStatus === 'sending' ? 'Sending…' : 'Send message' }}
+                </button>
+
+                <p
+                  v-if="formStatus === 'success'"
+                  class="form-status is-success"
+                  role="status"
+                >
+                  Message sent — I'll get back to you soon.
+                </p>
+
+                <p
+                  v-else-if="formStatus === 'error'"
+                  class="form-status is-error"
+                  role="alert"
+                >
+                  {{ formErrorMessage }}
+                </p>
+              </div>
+            </form>
+
+            <div class="contact-bottom">
+              <div class="social-links-group">
+                <p class="mono muted social-links-label">
+                  Social links
+                </p>
+
+                <div class="social-links-row">
+                  <template v-for="link in socialLinks" :key="link.name">
+                    <button
+                      v-if="link.type === 'copy'"
+                      type="button"
+                      class="social-link"
+                      :class="{ 'is-confirmed': emailCopied }"
+                      :aria-label="emailCopied ? `${email} copied to clipboard` : `Copy email address: ${email}`"
+                      @click="copyEmail"
+                    >
+                      <span
+                        class="social-link-icon"
+                        :style="{ '--tech-icon': `url('${emailCopied ? mailCopiedIconUrl : mailIconUrl}')` }"
+                        aria-hidden="true"
+                      />
+                    </button>
+
+                    <a
+                      v-else
+                      class="social-link"
+                      :href="link.href"
+                      :target="link.external ? '_blank' : undefined"
+                      :rel="link.external ? 'noopener noreferrer' : undefined"
+                      :aria-label="link.name"
+                    >
+                      <span
+                        v-if="link.icon"
+                        class="social-link-icon"
+                        :style="{ '--tech-icon': `url('${link.icon}')` }"
+                      />
+                    </a>
+                  </template>
+                </div>
+
+                <p
+                  class="copy-feedback mono"
+                  :class="{ 'is-visible': emailCopied }"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {{ emailCopied ? 'Copied to clipboard' : '' }}
+                </p>
+              </div>
+
+              <p>
+                For dev collaborations, freelance editing<br />
+                requests, or just a conversation about building<br />
+                things — these are my socials, feel free to reach out.
+              </p>
+            </div>
           </div>
         </div>
       </section>

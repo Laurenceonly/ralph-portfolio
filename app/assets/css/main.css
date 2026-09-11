@@ -22,6 +22,7 @@
   --body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --danger: #e2725b;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -36,6 +37,7 @@
   --line: rgb(36 40 34 / 14%);
   --header: rgb(255 255 255 / 88%);
   --chip: rgb(36 40 34 / 4%);
+  --danger: #c8543c;
 }
 
 /* ========================================
@@ -374,6 +376,57 @@ summary {
   box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
+/* ----------------------------------------
+   HERO PORTRAIT — ralph1 (color) / ralph2 (mono)
+
+   Two identically-cropped PNGs stacked in the same box; only one is
+   ever visible at full opacity at a time, toggled by the existing
+   `.light` root class. Sits behind the title/eyebrow (negative
+   z-index inside the hero's `isolation: isolate` context, same trick
+   `.hero-orbit` already uses) and fades to transparent at the bottom
+   edge so it blends into the section instead of hard-cutting off.
+---------------------------------------- */
+
+.hero-portrait-wrap {
+  position: absolute;
+  z-index: -1;
+  top: clamp(20px, 4vw, 56px);
+  right: 0;
+  width: min(34vw, 440px);
+  aspect-ratio: 1000 / 1235;
+  pointer-events: none;
+}
+
+.hero-portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  -webkit-mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
+          mask-image: linear-gradient(to bottom, black 82%, transparent 100%);
+  transition: opacity 500ms var(--ease-out);
+}
+
+/* Dark mode (default): grayscale version visible, color version hidden */
+.hero-portrait-mono {
+  opacity: 1;
+}
+
+.hero-portrait-color {
+  opacity: 0;
+}
+
+/* Light mode: flip which one shows */
+.light .hero-portrait-mono {
+  opacity: 0;
+}
+
+.light .hero-portrait-color {
+  opacity: 1;
+}
+
 .hero-eyebrow {
   display: flex;
   align-items: center;
@@ -486,6 +539,14 @@ summary {
 .contact-section .eyebrow {
   margin-bottom: 28px;
   color: var(--muted);
+}
+
+/* Now-line sits directly under the about eyebrow, so pull it in
+   tighter than the standard eyebrow spacing and give it its own
+   small gap before the heading below it. */
+.now-line {
+  margin-top: -20px;
+  margin-bottom: 8px;
 }
 
 .section-heading-bottom {
@@ -1446,6 +1507,160 @@ summary {
   color: var(--bg);
 }
 
+.contact-columns {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 64px;
+  margin-top: 64px;
+}
+
+/* Inside the two-column layout the socials + paragraph read better
+   stacked than side by side — same vertical treatment the mobile
+   breakpoint already uses for .contact-bottom, just applied earlier. */
+.contact-columns .contact-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 56px;
+  margin-top: 0;
+}
+
+.contact-columns .contact-bottom > p {
+  order: 1;
+  max-width: 420px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.85;
+}
+
+/* ========================================
+   CONTACT FORM
+======================================== */
+
+.contact-form {
+  padding: 40px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+
+.contact-form-label {
+  margin-bottom: 24px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.form-label {
+  color: var(--muted);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+  transition: border-color 250ms ease;
+}
+
+.form-input::placeholder {
+  color: var(--muted);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 96px;
+  padding-top: 12px;
+  font-family: var(--body);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.form-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 30px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition:
+    background 250ms ease,
+    color 250ms ease,
+    opacity 250ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .form-submit:not(:disabled):hover {
+    background: var(--accent);
+    color: var(--bg);
+  }
+}
+
+.form-submit:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.form-status {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.form-status.is-success {
+  color: var(--accent);
+}
+
+.form-status.is-error {
+  color: var(--danger);
+}
+
+/* ========================================
+   EMAIL COPY FEEDBACK
+======================================== */
+
+.social-link.is-confirmed {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.copy-feedback {
+  height: 15px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.copy-feedback.is-visible {
+  opacity: 1;
+}
+
 .contact-bottom {
   display: flex;
   align-items: center;
@@ -1474,7 +1689,7 @@ summary {
 .social-links-label {
   margin: 0;
   font-size: 13px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .social-links-row {
@@ -1485,10 +1700,13 @@ summary {
 .social-link {
   display: grid;
   place-items: center;
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
   border: 1px solid var(--line);
-  border-radius: 50%;
+  border-radius: 22px;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
   color: var(--muted);
   transition:
     transform 250ms var(--ease-out),
@@ -1499,19 +1717,11 @@ summary {
 .social-link-icon {
   --tech-icon: none;
 
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   background-color: currentColor;
   mask: var(--tech-icon) no-repeat center / contain;
   -webkit-mask: var(--tech-icon) no-repeat center / contain;
-}
-
-.social-link-icon-svg {
-  width: 34px;
-  height: 34px;
-  background: none;
-  mask: none;
-  -webkit-mask: none;
 }
 
 .social-link:focus-visible {
@@ -1546,6 +1756,7 @@ summary {
 .footer-links {
   display: flex;
   gap: 28px;
+  flex-shrink: 0;
 }
 
 .footer-links a {
@@ -1625,6 +1836,11 @@ summary {
     padding-inline: 32px;
   }
 
+  .hero-portrait-wrap {
+    width: min(32vw, 340px);
+    top: 28px;
+  }
+
   .project-row {
     gap: 32px;
   }
@@ -1652,6 +1868,10 @@ summary {
 
   .process-step {
     padding: 30px 26px;
+  }
+
+  .contact-columns {
+    gap: 40px;
   }
 }
 
@@ -1691,6 +1911,19 @@ summary {
   .view-certificate-btn {
     flex: 1;
     justify-content: center;
+  }
+
+  .contact-columns {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+
+  .contact-columns .contact-bottom {
+    margin-top: 0;
+  }
+
+  .contact-form {
+    padding: 32px;
   }
 }
 
@@ -1755,6 +1988,12 @@ summary {
     right: -15%;
     width: 78vw;
     opacity: 0.6;
+  }
+
+  .hero-portrait-wrap {
+    top: 40px;
+    right: -6%;
+    width: 56vw;
   }
 
   .hero-bottom {
@@ -1990,6 +2229,19 @@ summary {
     font-size: 38px;
   }
 
+  .contact-columns {
+    gap: 44px;
+    margin-top: 40px;
+  }
+
+  .contact-columns .contact-bottom {
+    gap: 24px;
+  }
+
+  .form-field {
+    margin-bottom: 22px;
+  }
+
   .contact-bottom {
     flex-direction: column;
     align-items: flex-start;
@@ -2011,6 +2263,7 @@ summary {
   .social-link {
     width: 60px;
     height: 60px;
+    border-radius: 16px;
   }
 
   .social-link-icon {
@@ -2018,15 +2271,17 @@ summary {
     height: 26px;
   }
 
-  .social-link-icon-svg {
-    width: 28px;
-    height: 28px;
+  .contact-form {
+    padding: 24px;
+    border-radius: 16px;
   }
 
   .site-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    gap: 16px;
+  }
+
+  .site-footer > span {
+    max-width: 68%;
   }
 }
 
@@ -2050,6 +2305,12 @@ summary {
 
   .hero-title {
     font-size: clamp(32px, 12.4vw, 90px);
+  }
+
+  .hero-portrait-wrap {
+    top: 32px;
+    right: -10%;
+    width: 62vw;
   }
 
   .theme-toggle {
@@ -2076,6 +2337,18 @@ summary {
     width: 50px;
     font-size: 32px;
   }
+
+  .site-footer {
+    font-size: 10px;
+  }
+
+  .site-footer > span {
+    max-width: 60%;
+  }
+
+  .footer-links a span {
+    display: none;
+  }
 }
 
 /* ========================================
@@ -2096,6 +2369,10 @@ summary {
 
   .project-image {
     transform: none !important;
+  }
+
+  .hero-portrait {
+    transition: none !important;
   }
 
   .stage-halo,

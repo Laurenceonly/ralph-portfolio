@@ -399,6 +399,18 @@ const carouselTrack = ref<HTMLElement | null>(null)
 const activeProject = ref(0)
 let carouselScrollRaf: number | undefined
 
+/* ========================================
+  MORE PROJECTS (ARCHIVE) TOGGLE
+======================================== */
+
+const archiveOpen = ref(false)
+
+function toggleArchive() {
+  archiveOpen.value = !archiveOpen.value
+
+  void nextTick(() => refreshScroll())
+}
+
 function scrollToProject(index: number) {
   const track = carouselTrack.value
   if (!track) return
@@ -668,16 +680,30 @@ function archiveSlug(title: string) {
 function openArchiveFromHash() {
   if (typeof window === 'undefined' || !window.location.hash) return
 
-  const target = document.getElementById(window.location.hash.slice(1))
+  const id = window.location.hash.slice(1)
 
-  if (target instanceof HTMLDetailsElement) {
-    target.open = true
+  const isArchiveHash = archive.some(
+    (project) => `archive-${archiveSlug(project.title)}` === id,
+  )
 
-    void nextTick(() => {
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      refreshScroll()
-    })
-  }
+  if (!isArchiveHash) return
+
+  // The archive list only exists in the DOM once the toggle is open,
+  // so open it first and wait a tick before looking the details up.
+  archiveOpen.value = true
+
+  void nextTick(() => {
+    const target = document.getElementById(id)
+
+    if (target instanceof HTMLDetailsElement) {
+      target.open = true
+
+      void nextTick(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        refreshScroll()
+      })
+    }
+  })
 }
 
 /* ========================================
@@ -866,7 +892,7 @@ onBeforeUnmount(() => {
 
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#work">Work</a>
-        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
         <a href="#process">Process</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -987,17 +1013,23 @@ onBeforeUnmount(() => {
         </h1>
 
         <div class="hero-bottom">
-          <p class="hero-statement">
-            Curious by nature.<br />
-            <span>Building with purpose.</span>
-          </p>
+          <div class="hero-lede">
+            <p class="eyebrow muted now-line">
+              NOW — Sept 2026: Wrapping up capstone (GraphiScan), building
+              GitHub history, open to dev + design work.
+            </p>
+
+            <p class="hero-statement">
+              Curious by nature.<br />
+              <span>Building with purpose.</span>
+            </p>
+          </div>
 
           <div class="hero-intro">
             <p>
-              I build web and mobile applications — and design posters,
-              tarpaulins, and invitations for churches and events on the
-              side. Different mediums, same instinct: solve the problem
-              in front of me.
+              I'm Ralph Laurence C. Sayo, a fourth-year BS Information
+              Technology student who builds web and mobile applications —
+              and edits posters, photos, and videos on the side.
             </p>
 
             <a class="text-link" href="#work">
@@ -1211,131 +1243,135 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- ==================================
-          PROJECT ARCHIVE
-      =================================== -->
+        <!-- ==================================
+            MORE PROJECTS — HIDDEN UNTIL ASKED FOR
+        =================================== -->
 
-      <section
-        class="archive-section page-width"
-        aria-labelledby="archive-title"
-      >
-        <div class="archive-heading" data-reveal>
-          <div>
-            <p class="eyebrow">THE PROJECT ARCHIVE</p>
-
-            <h2 id="archive-title">
-              Every build counts.
-            </h2>
-          </div>
-
-          <span class="mono muted">
-            {{ String(archive.length).padStart(2, '0') }}
-            MORE PROJECTS
-          </span>
-        </div>
-
-        <div class="archive-list">
-          <details
-            v-for="(project, index) in archive"
-            :id="`archive-${archiveSlug(project.title)}`"
-            :key="project.title"
-            class="archive-item"
-            data-reveal
-            @toggle="refreshScroll"
+        <div class="archive-toggle-wrap" data-reveal>
+          <button
+            type="button"
+            class="archive-toggle"
+            :aria-expanded="archiveOpen"
+            aria-controls="more-projects-panel"
+            @click="toggleArchive"
           >
-            <summary class="archive-row">
-              <span class="archive-index mono">
-                {{ String(index + 4).padStart(2, '0') }}
-              </span>
+            <span class="archive-toggle-label">
+              {{
+                archiveOpen
+                  ? 'Hide other projects'
+                  : `See ${archive.length} other projects`
+              }}
+            </span>
 
-              <span class="archive-title">
-                <span class="archive-name">
-                  {{ project.title }}
-                </span>
+            <span
+              class="archive-toggle-icon"
+              :class="{ 'is-open': archiveOpen }"
+              aria-hidden="true"
+            >
+              ↓
+            </span>
+          </button>
 
-                <span class="archive-category">
-                  {{ project.category }}
-                </span>
-              </span>
-
-              <span class="archive-period mono">
-                {{ project.period }}
-              </span>
-
-              <span class="archive-plus" aria-hidden="true">
-                +
-              </span>
-            </summary>
-
-            <div class="archive-expanded">
-              <span class="mono muted">
-                BUILT WITH
-              </span>
-
-              <ul
-                class="skill-tokens archive-stack"
-                :aria-label="`${project.title} technologies`"
-              >
-                <li
-                  v-for="tech in project.stack"
-                  :key="tech"
+          <Transition
+            name="archive-fade"
+            @after-enter="refreshScroll"
+            @after-leave="refreshScroll"
+          >
+            <div
+              v-if="archiveOpen"
+              id="more-projects-panel"
+              class="archive-panel"
+              role="region"
+              aria-label="More projects"
+            >
+              <div class="archive-list">
+                <details
+                  v-for="(project, index) in archive"
+                  :id="`archive-${archiveSlug(project.title)}`"
+                  :key="project.title"
+                  class="archive-item"
+                  @toggle="refreshScroll"
                 >
-                  <span
-                    v-if="techIconUrl(tech)"
-                    class="token-icon"
-                    :style="{ '--tech-icon': `url('${techIconUrl(tech)}')` }"
-                    aria-hidden="true"
-                  />
-                  <span v-else class="token-icon token-icon-initial" aria-hidden="true">
-                    {{ techInitials(tech) }}
-                  </span>
+                  <summary class="archive-row">
+                    <span class="archive-index mono">
+                      {{ String(index + 4).padStart(2, '0') }}
+                    </span>
 
-                  {{ tech }}
-                </li>
-              </ul>
+                    <span class="archive-title">
+                      <span class="archive-name">
+                        {{ project.title }}
+                      </span>
+
+                      <span class="archive-category">
+                        {{ project.category }}
+                      </span>
+                    </span>
+
+                    <span class="archive-period mono">
+                      {{ project.period }}
+                    </span>
+
+                    <span class="archive-plus" aria-hidden="true">
+                      +
+                    </span>
+                  </summary>
+
+                  <div class="archive-expanded">
+                    <span class="mono muted">
+                      BUILT WITH
+                    </span>
+
+                    <ul
+                      class="skill-tokens archive-stack"
+                      :aria-label="`${project.title} technologies`"
+                    >
+                      <li
+                        v-for="tech in project.stack"
+                        :key="tech"
+                      >
+                        <span
+                          v-if="techIconUrl(tech)"
+                          class="token-icon"
+                          :style="{ '--tech-icon': `url('${techIconUrl(tech)}')` }"
+                          aria-hidden="true"
+                        />
+                        <span v-else class="token-icon token-icon-initial" aria-hidden="true">
+                          {{ techInitials(tech) }}
+                        </span>
+
+                        {{ tech }}
+                      </li>
+                    </ul>
+                  </div>
+                </details>
+              </div>
             </div>
-          </details>
+          </Transition>
         </div>
       </section>
 
       <!-- ==================================
-          ABOUT
+          SKILLS & CERTIFICATIONS
       =================================== -->
 
       <section
-        id="about"
-        class="about-section page-width"
-        aria-labelledby="about-title"
+        id="skills"
+        class="skills-section page-width"
+        aria-labelledby="skills-title"
       >
-        <div class="about-intro" data-reveal>
-          <p class="eyebrow">
-            02 / THE PERSON BEHIND THE WORK
-          </p>
+        <div class="section-heading" data-reveal>
+          <p class="eyebrow">02 / SKILLS &amp; CERTIFICATIONS</p>
 
-          <p class="eyebrow muted now-line">
-            NOW — Sept 2026: Wrapping up capstone (GraphiScan), building
-            GitHub history, open to dev + design work.
-          </p>
-
-          <h2 id="about-title">
-            Still learning.<br />
-            <span class="muted">Always building.</span>
-          </h2>
-
-          <div class="about-copy">
-            <p>
-              I'm Ralph Laurence C. Sayo, a fourth-year Bachelor of
-              Science in Information Technology student.
-            </p>
+          <div class="section-heading-bottom">
+            <h2 id="skills-title">
+              What I bring<br />
+              <span class="muted">to the table.</span>
+            </h2>
 
             <p>
-              My interests span software development, mobile
-              applications, networking, and machine learning. Through
-              academic projects, capstone work, and self-learning, I'm
-              exploring how these disciplines can solve practical
-              problems.
+              Core toolkit across web, mobile, and AI — backed by
+              certifications along the way.
             </p>
           </div>
         </div>
@@ -1437,9 +1473,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <!-- ==================================
-            CERTIFICATIONS
-        =================================== -->
+        <!-- Certifications -->
 
         <div class="credentials" data-reveal>
           <p class="eyebrow muted">
@@ -1561,7 +1595,7 @@ onBeforeUnmount(() => {
             Have something<br />
 
             <span class="contact-last-line">
-              in mind?
+              <span class="muted">in mind?</span>
 
               <a
                 class="contact-arrow"

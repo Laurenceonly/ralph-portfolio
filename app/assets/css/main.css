@@ -25,6 +25,33 @@
   --danger: #e2725b;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ----------------------------------------
+     HERO PORTRAIT GEOMETRY
+  ---------------------------------------- */
+  --portrait-w: min(34vw, 440px);
+  --portrait-top: clamp(20px, 4vw, 56px);
+
+  /* ----------------------------------------
+     HERO TEXT-STACK GEOMETRY (NEW)
+
+     These model the approximate height of the eyebrow + two-line
+     title, using the SAME clamp() curves those elements actually
+     use. --hero-text-h is combined with --portrait-bottom below to
+     let .hero-bottom calculate its own top margin — so whatever
+     combination of title size vs. photo size a given viewport
+     produces, there's always enough clearance between the intro
+     text and your photo. Deliberately biased low (1.85x instead of
+     the true ~2x line multiplier) so the formula always ers toward
+     MORE clearance, never less.
+  ---------------------------------------- */
+  --hero-pad-top: clamp(68px, 10vw, 140px);
+  --hero-title-fs: clamp(64px, 12.4vw, 176px);
+  --hero-eyebrow-h: 50px;
+  --hero-text-h: calc(
+    var(--hero-pad-top) + var(--hero-eyebrow-h) + (var(--hero-title-fs) * 1.85)
+  );
+  --portrait-bottom: calc(var(--portrait-top) + (var(--portrait-w) * 1.235));
 }
 
 :root.light {
@@ -324,6 +351,11 @@ summary {
   isolation: isolate;
   padding-top: clamp(68px, 10vw, 140px);
   padding-bottom: 0;
+
+  /* Floor: .hero itself can never be shorter than the portrait needs. */
+  min-height: calc(
+    var(--portrait-top) + (var(--portrait-w) * 1.235) + 56px
+  );
 }
 
 .hero::before {
@@ -376,29 +408,12 @@ summary {
   box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
-/* ----------------------------------------
-   HERO PORTRAIT — ralph1 (color) / ralph2 (mono)
-
-   Two identically-cropped PNGs stacked in the same box; only one is
-   ever visible at full opacity at a time, toggled by the existing
-   `.light` root class. Sits behind the title/eyebrow (negative
-   z-index inside the hero's `isolation: isolate` context, same trick
-   `.hero-orbit` already uses).
-
-   Mask fade pushed down to 97% (was 82%, then 93%) so only the very
-   last sliver of the bottom hem softens — basically imperceptible —
-   instead of cutting into the torso, which is what was reading as a
-   gray "shadow/cloud" on the belly in light mode (invisible on dark
-   because it faded dark-on-dark). Percentage-based, so it stays
-   correct at every screen size.
----------------------------------------- */
-
 .hero-portrait-wrap {
   position: absolute;
   z-index: -1;
-  top: clamp(20px, 4vw, 56px);
-  right: 0;
-  width: min(34vw, 440px);
+  top: var(--portrait-top);
+  right: var(--portrait-right, 0);
+  width: var(--portrait-w);
   aspect-ratio: 1000 / 1235;
   pointer-events: none;
 }
@@ -415,7 +430,6 @@ summary {
   transition: opacity 500ms var(--ease-out);
 }
 
-/* Dark mode (default): grayscale version visible, color version hidden */
 .hero-portrait-mono {
   opacity: 1;
 }
@@ -424,7 +438,6 @@ summary {
   opacity: 0;
 }
 
-/* Light mode: flip which one shows */
 .light .hero-portrait-mono {
   opacity: 0;
 }
@@ -476,8 +489,25 @@ summary {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 64px;
-  margin-top: 56px;
+  /* NEW: self-calculating clearance instead of a flat 56px.
+     Falls back to 56px whenever the natural flow already clears
+     the photo (e.g. very short titles), and opens up automatically
+     whenever it wouldn't. */
+  margin-top: max(56px, calc(var(--portrait-bottom) + 40px - var(--hero-text-h)));
   padding-bottom: 72px;
+}
+
+/* Wraps the NOW status line + hero statement in the same grid
+   column, so the "what I'm doing right now" line lives right in
+   the hero instead of four sections down. */
+.hero-lede {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero-lede .now-line {
+  margin: 0;
 }
 
 .hero-statement {
@@ -505,21 +535,38 @@ summary {
 .text-link {
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-  min-height: 48px;
+  gap: 10px;
+  min-height: 44px;
   margin-top: 24px;
-  border-bottom: 1px solid var(--muted);
-  font-size: 14px;
+  padding: 12px 20px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  transition:
+    border-color 250ms ease,
+    color 250ms ease,
+    background 250ms ease;
 }
 
 .text-link span {
-  font-size: 24px;
+  font-size: 14px;
   transition: transform 300ms var(--ease-out);
 }
 
-.text-link:hover span {
-  transform: translate(4px, -4px);
+@media (hover: hover) and (pointer: fine) {
+  .text-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--chip);
+  }
+
+  .text-link:hover span {
+    transform: translate(3px, -3px);
+  }
 }
 
 @keyframes orbit-turn {
@@ -530,10 +577,6 @@ summary {
 
 /* ========================================
    SECTION HEADINGS
-
-   All section headings (Work, About, Process, Contact) now share
-   this single scale/weight/tracking so sizing reads consistently
-   across the whole site.
 ======================================== */
 
 .work-section {
@@ -545,18 +588,9 @@ summary {
 }
 
 .section-heading > .eyebrow,
-.about-intro > .eyebrow,
 .contact-section .eyebrow {
   margin-bottom: 28px;
   color: var(--muted);
-}
-
-/* Now-line sits directly under the about eyebrow, so pull it in
-   tighter than the standard eyebrow spacing and give it its own
-   small gap before the heading below it. */
-.now-line {
-  margin-top: -20px;
-  margin-bottom: 8px;
 }
 
 .section-heading-bottom {
@@ -566,8 +600,7 @@ summary {
   gap: 40px;
 }
 
-.section-heading h2,
-.about-intro h2 {
+.section-heading h2 {
   font-size: clamp(42px, 5.4vw, 76px);
   font-weight: 500;
   line-height: 1.08;
@@ -615,8 +648,6 @@ summary {
   scroll-snap-stop: always;
 }
 
-/* Prev/next now live on the stage box itself, vertically centered
-   on it regardless of how tall the info block above it is. */
 .stage-arrow {
   position: absolute;
   top: 50%;
@@ -667,11 +698,6 @@ summary {
 
 /* ========================================
    PROJECTS — UNIFORM LAYOUT (ALL SLIDES)
-
-   All three featured projects now share GraphiScan's original
-   box height, image sizing, and heading scale, so the carousel
-   feels identical between swipes. Mindayo/CleftTune keep only
-   cosmetic, non-sizing touches (browser chrome, rounded corners).
 ======================================== */
 
 .project-row {
@@ -724,15 +750,6 @@ summary {
   font-size: 15px;
   line-height: 1.7;
 }
-
-/* ========================================
-   TECH STACK — SHARED PILL TOKENS
-
-   The featured carousel now reuses .skill-tokens / .token-icon
-   (the same classes as the toolkit + archive lists) so icon size
-   and pill styling stay identical across the whole site. Only the
-   pulse-on-tap feedback is specific to the carousel's tech-list.
-======================================== */
 
 .tech-list {
   margin: 18px 0 0;
@@ -920,30 +937,96 @@ summary {
 }
 
 /* ========================================
-   ARCHIVE — EXPANDABLE INDEX
+   SKILLS & CERTIFICATIONS SECTION
 ======================================== */
 
-.archive-section {
-  padding-block: 20px 130px;
+.skills-section {
+  padding-block: 64px 130px;
 }
 
-.archive-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 30px;
-  margin-bottom: 40px;
+/* First direct child under the section heading, so it doesn't
+   need the extra breathing room it had when it sat further down
+   the page. */
+.skills-section .skill-explorer {
+  margin-top: 0;
 }
 
-.archive-heading .eyebrow {
-  margin-bottom: 28px;
-  color: var(--muted);
+/* ========================================
+   MORE PROJECTS — TOGGLE + PANEL
+   (Folded into Selected Work. Nothing here renders until the
+   visitor asks for it — these are the projects with no real
+   content/screenshots yet, so they stay opt-in. Styled as a pill
+   button — same shape/font as .view-certificate-btn — instead of
+   the old underlined text-link treatment.)
+======================================== */
+
+.archive-toggle-wrap {
+  margin-top: 32px;
 }
 
-.archive-heading h2 {
-  font-size: clamp(32px, 3.6vw, 50px);
-  font-weight: 500;
-  letter-spacing: -0.055em;
+.archive-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 20px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  transition:
+    border-color 250ms ease,
+    color 250ms ease,
+    background 250ms ease;
+}
+
+.archive-toggle-label {
+  white-space: nowrap;
+}
+
+.archive-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
+  transition:
+    transform 300ms var(--ease-out),
+    color 250ms ease;
+}
+
+.archive-toggle-icon.is-open {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .archive-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--chip);
+  }
+
+  .archive-toggle:hover .archive-toggle-icon {
+    color: var(--accent);
+  }
+}
+
+.archive-panel {
+  margin-top: 32px;
+  overflow: hidden;
+}
+
+.archive-fade-enter-active,
+.archive-fade-leave-active {
+  transition:
+    opacity 280ms ease,
+    transform 280ms var(--ease-out);
+}
+
+.archive-fade-enter-from,
+.archive-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
 .archive-item {
@@ -1109,36 +1192,6 @@ summary {
 }
 
 /* ========================================
-   ABOUT — EDITORIAL BIO
-======================================== */
-
-.about-section {
-  padding-block: 110px 140px;
-  border-top: 1px solid var(--line);
-}
-
-.about-copy {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
-  max-width: 900px;
-  margin: 48px 0 0 auto;
-}
-
-.about-copy p {
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1.9;
-}
-
-.about-copy p:first-child {
-  color: var(--text);
-  font-size: 20px;
-  line-height: 1.7;
-  letter-spacing: -0.025em;
-}
-
-/* ========================================
    SKILLS — INTERACTIVE EXPLORER
 ======================================== */
 
@@ -1275,23 +1328,6 @@ summary {
   animation-delay: calc(var(--token-index) * 35ms);
 }
 
-/* Tech-stack icons — brand logos loaded from Simple Icons as a
-   background-image reading the --tech-icon custom property (set
-   inline per icon).
-
-   Simple Icons SVGs ship with no `fill` set, so their default is
-   plain black. That's fine on the light theme's white/near-white
-   surfaces, but on the dark theme's near-black surfaces
-   (--surface: #171a1e, --chip: rgb(255 255 255 / 4%)) a black icon
-   is effectively invisible — which is the "weird icons in dark
-   mode" bug. Since these come from an external SVG file (not
-   inline markup), `currentColor` can't reach into them, so we
-   can't just recolor via `fill`. Instead we invert + brighten the
-   rendered icon in dark mode, and turn the filter off again in
-   light mode where the original black rendering already reads
-   correctly. Shared by the toolkit list, the archive list, the
-   featured-project carousel's tech list, and certifications.
-*/
 .token-icon {
   flex: 0 0 auto;
   width: 18px;
@@ -1317,9 +1353,6 @@ summary {
   mask: none;
   -webkit-mask: none;
   font-size: 9px;
-  /* This is rendered text (initials), not an icon image — undo the
-     dark-mode invert filter above so the glyph keeps using the
-     theme's normal text color instead of getting flipped too. */
   filter: none;
 }
 
@@ -1425,9 +1458,11 @@ summary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
+  min-height: 44px;
+  padding: 12px 20px;
   border: 1px solid var(--line);
   border-radius: 999px;
+  background: transparent;
   color: var(--text);
   font-family: var(--mono);
   font-size: 11px;
@@ -1436,14 +1471,21 @@ summary {
   transition:
     border-color 250ms ease,
     color 250ms ease,
-    background 250ms ease,
-    transform 250ms var(--ease-out);
+    background 250ms ease;
 }
 
 .view-certificate-btn svg {
   width: 14px;
   height: 14px;
   flex: 0 0 auto;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .view-certificate-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--chip);
+  }
 }
 
 .credential-link {
@@ -1477,11 +1519,6 @@ summary {
 
 /* ========================================
    CONTACT — CLOSING STATEMENT
-
-   Heading now shares the same scale/weight/tracking as every other
-   section heading (.section-heading h2 / .about-intro h2) instead
-   of its own oversized clamp — keeps sizing consistent site-wide.
-   Arrow scaled down to match.
 ======================================== */
 
 .contact-section {
@@ -1551,9 +1588,6 @@ summary {
   margin-top: 64px;
 }
 
-/* Inside the two-column layout the socials + paragraph read better
-   stacked than side by side — same vertical treatment the mobile
-   breakpoint already uses for .contact-bottom, just applied earlier. */
 .contact-columns .contact-bottom {
   display: flex;
   flex-direction: column;
@@ -1639,24 +1673,27 @@ summary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 15px 30px;
-  border: 1px solid var(--accent);
+  min-height: 44px;
+  padding: 12px 20px;
+  border: 1px solid var(--line);
   border-radius: 999px;
   background: transparent;
-  color: var(--accent);
+  color: var(--text);
   font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
+  font-size: 11px;
+  letter-spacing: 0.03em;
   transition:
-    background 250ms ease,
+    border-color 250ms ease,
     color 250ms ease,
+    background 250ms ease,
     opacity 250ms ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .form-submit:not(:disabled):hover {
-    background: var(--accent);
-    color: var(--bg);
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--chip);
   }
 }
 
@@ -1698,22 +1735,6 @@ summary {
   opacity: 1;
 }
 
-.contact-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-  margin-top: 64px;
-}
-
-.contact-bottom > p {
-  max-width: 320px;
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.8;
-  text-align: left;
-}
-
 .social-links-group {
   display: flex;
   flex-direction: column;
@@ -1752,11 +1773,6 @@ summary {
     color 250ms ease;
 }
 
-/* Social icons (GitHub, Facebook, Instagram, email) — same deal as
-   .token-icon above: these are black-by-default SVGs painted via
-   background-image, so they'd vanish against the dark theme's
-   near-black surfaces without an explicit recolor. Invert + brighten
-   in dark mode, switch it off in light mode. */
 .social-link-icon {
   width: 36px;
   height: 36px;
@@ -1877,17 +1893,17 @@ summary {
 ======================================== */
 
 @media (max-width: 1000px) {
+  :root {
+    --portrait-w: min(32vw, 340px);
+    --portrait-top: 28px;
+  }
+
   .page-width {
     width: calc(100% - 64px);
   }
 
   .site-header {
     padding-inline: 32px;
-  }
-
-  .hero-portrait-wrap {
-    width: min(32vw, 340px);
-    top: 28px;
   }
 
   .project-row {
@@ -1926,10 +1942,6 @@ summary {
 
 /* ========================================
    NARROW TABLET — STACK PROJECT COLUMNS EARLIER
-
-   Between the desktop 2-column layout and the full mobile stack,
-   .project-info was staying side-by-side too long and getting
-   cramped. Stack it earlier, same treatment mobile already uses.
 ======================================== */
 
 @media (max-width: 860px) {
@@ -1971,6 +1983,13 @@ summary {
     margin-top: 0;
   }
 
+  /* Tablet step-down: same specificity as the desktop rule above,
+     declared later in the file, so it wins outright without !important. */
+  .contact-columns .contact-bottom > p {
+    max-width: 480px;
+    font-size: 16px;
+  }
+
   .contact-form {
     padding: 32px;
   }
@@ -1981,6 +2000,19 @@ summary {
 ======================================== */
 
 @media (max-width: 720px) {
+  :root {
+    --portrait-w: 56vw;
+    --portrait-top: 40px;
+    --portrait-right: -6%;
+
+    /* Kept accurate for consistency, even though the stacked
+       .hero-bottom layout below no longer relies on these to avoid
+       overlap. */
+    --hero-pad-top: 60px;
+    --hero-title-fs: clamp(38px, 12.4vw, 90px);
+    --hero-eyebrow-h: 40px;
+  }
+
   html {
     scroll-padding-top: 88px;
   }
@@ -2019,7 +2051,7 @@ summary {
   }
 
   .hero-eyebrow {
-    max-width: 290px;
+    max-width: 70%;
     margin-bottom: 32px;
     font-size: 9px;
   }
@@ -2037,12 +2069,6 @@ summary {
     right: -15%;
     width: 78vw;
     opacity: 0.6;
-  }
-
-  .hero-portrait-wrap {
-    top: 40px;
-    right: -6%;
-    width: 56vw;
   }
 
   .hero-bottom {
@@ -2077,8 +2103,7 @@ summary {
     max-width: 330px;
   }
 
-  .section-heading h2,
-  .about-intro h2 {
+  .section-heading h2 {
     font-size: clamp(36px, 8.5vw, 54px);
   }
 
@@ -2151,17 +2176,18 @@ summary {
     right: 10px;
   }
 
-  .archive-section {
-    padding-block: 12px 80px;
+  .skills-section {
+    padding-block: 40px 80px;
   }
 
-  .archive-heading {
-    display: block;
+  .archive-toggle-wrap {
+    margin-top: 20px;
   }
 
-  .archive-heading > .mono {
-    display: block;
-    margin-top: 18px;
+  .archive-toggle {
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 10px;
   }
 
   .archive-row {
@@ -2191,20 +2217,6 @@ summary {
     padding: 0 36px 26px;
   }
 
-  .about-section {
-    padding-block: 76px 88px;
-  }
-
-  .about-copy {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    margin-top: 32px;
-  }
-
-  .about-copy p:first-child {
-    font-size: 19px;
-  }
-
   .process-section {
     padding-block: 12px 80px;
   }
@@ -2226,6 +2238,10 @@ summary {
     grid-template-columns: 1fr;
     gap: 28px;
     margin-top: 52px;
+  }
+
+  .skills-section .skill-explorer {
+    margin-top: 0;
   }
 
   .skill-option {
@@ -2291,21 +2307,23 @@ summary {
     margin-bottom: 22px;
   }
 
-  .contact-bottom {
-    flex-direction: column;
-    align-items: flex-start;
+  /* Stay centered on mobile too — matches desktop/tablet so the
+     block reads the same everywhere. Only the size shrinks; the
+     alignment behavior stays identical across breakpoints. Higher
+     specificity (.contact-columns .contact-bottom) matches the
+     desktop rule so this wins by source order, no !important needed. */
+  .contact-columns .contact-bottom {
     gap: 24px;
     margin-top: 36px;
   }
 
-  .contact-bottom > p {
-    max-width: none;
-    text-align: left;
-    order: 1;
+  .contact-columns .contact-bottom > p {
+    max-width: 320px;
+    font-size: 15px;
+    line-height: 1.75;
   }
 
   .social-links-group {
-    align-items: center;
     order: 2;
   }
 
@@ -2335,6 +2353,17 @@ summary {
 }
 
 @media (max-width: 400px) {
+  :root {
+    --portrait-w: 62vw;
+    --portrait-top: 32px;
+    --portrait-right: -10%;
+    --hero-title-fs: clamp(32px, 12.4vw, 90px);
+  }
+
+  .hero-eyebrow {
+    max-width: 62%;
+  }
+
   .site-header {
     padding-inline: 14px;
   }
@@ -2356,12 +2385,6 @@ summary {
     font-size: clamp(32px, 12.4vw, 90px);
   }
 
-  .hero-portrait-wrap {
-    top: 32px;
-    right: -10%;
-    width: 62vw;
-  }
-
   .theme-toggle {
     width: 44px;
     height: 24px;
@@ -2380,6 +2403,11 @@ summary {
   .theme-toggle-thumb svg {
     width: 11px;
     height: 11px;
+  }
+
+  .archive-toggle {
+    padding: 9px 14px;
+    font-size: 9px;
   }
 
   .contact-arrow {

@@ -1014,11 +1014,6 @@ onBeforeUnmount(() => {
 
         <div class="hero-bottom">
           <div class="hero-lede">
-            <p class="eyebrow muted now-line">
-              NOW — Sept 2026: Wrapping up capstone (GraphiScan), building
-              GitHub history, open to dev + design work.
-            </p>
-
             <p class="hero-statement">
               Curious by nature.<br />
               <span>Building with purpose.</span>

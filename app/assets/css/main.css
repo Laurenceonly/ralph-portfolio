@@ -506,6 +506,9 @@ summary {
   gap: 16px;
 }
 
+.hero-lede .now-line {
+  margin: 0;
+}
 
 .hero-statement {
   font-size: clamp(24px, 2.5vw, 36px);
@@ -519,7 +522,7 @@ summary {
 
 .hero-intro {
   max-width: 380px;
-  margin-top: 32px;
+  margin-top: 4px;
   margin-left: auto;
 }
 

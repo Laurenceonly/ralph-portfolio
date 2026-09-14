@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
-  modules: ['@nuxtjs/color-mode'],
+  modules: ['@nuxtjs/color-mode', '@vercel/analytics'],
 
   css: ['~/assets/css/main.css'],
 

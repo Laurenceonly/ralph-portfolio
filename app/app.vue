@@ -891,7 +891,7 @@ onBeforeUnmount(() => {
 
         <p class="eyebrow hero-eyebrow">
           <span class="status-dot" aria-hidden="true"></span>
-          Full-Stack &amp; Mobile Developer · Freelance Visual Editor
+          Full-Stack Web &amp; Mobile Developer · Freelance Visual Editor
         </p>
 
         <h1

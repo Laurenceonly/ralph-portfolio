@@ -175,71 +175,6 @@ const projects = [
     imageAlt: 'GraphiScan application screenshot',
     tone: 'blue',
   },
-  {
-    id: 'clefttune',
-    number: '02',
-    title: 'CleftTune',
-    category: 'MOBILE / ACCESSIBILITY',
-    period: 'Third year',
-    subtitle: 'Technology with communication in mind.',
-    description:
-      'An assistive app for people with cleft palate, turning speech into clearer, easier-to-understand communication.',
-    note:
-      'Built with accessibility at the core, not just as an add-on feature.',
-    stack: ['Flutter', 'Firebase'],
-    image: '/images/cleft1.png',
-    imageAlt: 'CleftTune mobile application screenshot',
-    tone: 'violet',
-  },
-  {
-    id: 'mindayo',
-    number: '03',
-    title: 'Mindayo',
-    category: 'WEB / FULL STACK',
-    period: 'Second year',
-    subtitle: 'Building beyond the interface.',
-    description:
-      'A travel platform connecting explorers to local wonders and destinations, with easy, streamlined booking built in.',
-    note:
-      'Built solo, end-to-end — from the database up to the booking flow.',
-    stack: ['Laravel', 'PHP', 'MySQL'],
-    image: '/images/mindayo1.png',
-    imageAlt: 'Mindayo web application screenshot',
-    tone: 'green',
-  },
-]
-
-const archive = [
-  {
-    title: 'SmartFit',
-    category: 'Mobile health & fitness',
-    stack: ['Flutter', 'Firebase'],
-    period: 'Third year',
-  },
-  {
-    title: 'Heartfelt Homes',
-    category: 'Web application',
-    stack: ['Laravel', 'MySQL', 'Figma'],
-    period: 'Second year',
-  },
-  {
-    title: 'Hatag',
-    category: 'Community pantry management',
-    stack: ['HTML', 'CSS', 'Bootstrap'],
-    period: 'Second year',
-  },
-  {
-    title: 'EZSale',
-    category: 'Desktop point of sale',
-    stack: ['Java', 'JFrame', 'NetBeans'],
-    period: 'First year',
-  },
-  {
-    title: 'Student Average Calculator',
-    category: 'Desktop grade management',
-    stack: ['Java', 'Swing', 'NetBeans'],
-    period: 'First year',
-  },
 ]
 
 const skillGroups = [
@@ -250,11 +185,18 @@ const skillGroups = [
       'HTML',
       'CSS',
       'JavaScript',
+      'TypeScript',
       'Bootstrap',
       'Vue',
+      'Nuxt',
+      'React',
+      'Next.js',
       'PHP',
       'Laravel',
+      'Node.js',
       'MySQL',
+      'PostgreSQL',
+      'MongoDB',
     ],
   },
   {
@@ -262,10 +204,12 @@ const skillGroups = [
     description: 'Mobile experiences and image-analysis experiments.',
     skills: [
       'Flutter',
+      'React Native',
       'Firebase',
       'Python',
       'Flask',
       'PyTorch',
+      'Keras',
       'OpenCV',
       'TensorFlow',
     ],
@@ -283,8 +227,10 @@ const skillGroups = [
       'C++',
       'Git',
       'GitHub',
+      'Docker',
       'Postman',
       'Figma',
+      'Vercel',
       'Cisco Networking',
     ],
   },
@@ -329,6 +275,17 @@ const techIconSlugs: Record<string, string> = {
   Python: 'python',
   Flask: 'flask',
   Vue: 'vuedotjs',
+  Nuxt: 'nuxtdotjs',
+  React: 'react',
+  'React Native': 'react',
+  'Next.js': 'nextdotjs',
+  'Node.js': 'nodedotjs',
+  TypeScript: 'typescript',
+  PostgreSQL: 'postgresql',
+  MongoDB: 'mongodb',
+  Keras: 'keras',
+  Docker: 'docker',
+  Vercel: 'vercel',
   PyTorch: 'pytorch',
   OpenCV: 'opencv',
   TensorFlow: 'tensorflow',
@@ -398,18 +355,6 @@ function imageFailed(src: string) {
 const carouselTrack = ref<HTMLElement | null>(null)
 const activeProject = ref(0)
 let carouselScrollRaf: number | undefined
-
-/* ========================================
-  MORE PROJECTS (ARCHIVE) TOGGLE
-======================================== */
-
-const archiveOpen = ref(false)
-
-function toggleArchive() {
-  archiveOpen.value = !archiveOpen.value
-
-  void nextTick(() => refreshScroll())
-}
 
 function scrollToProject(index: number) {
   const track = carouselTrack.value
@@ -665,48 +610,6 @@ function resetPreview(event: PointerEvent) {
 }
 
 /* ========================================
-  ARCHIVE DEEP-LINKING
-======================================== */
-
-// Turns "Student Average Calculator" into "student-average-calculator"
-// so each archive entry gets a stable, shareable URL hash.
-function archiveSlug(title: string) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
-}
-
-function openArchiveFromHash() {
-  if (typeof window === 'undefined' || !window.location.hash) return
-
-  const id = window.location.hash.slice(1)
-
-  const isArchiveHash = archive.some(
-    (project) => `archive-${archiveSlug(project.title)}` === id,
-  )
-
-  if (!isArchiveHash) return
-
-  // The archive list only exists in the DOM once the toggle is open,
-  // so open it first and wait a tick before looking the details up.
-  archiveOpen.value = true
-
-  void nextTick(() => {
-    const target = document.getElementById(id)
-
-    if (target instanceof HTMLDetailsElement) {
-      target.open = true
-
-      void nextTick(() => {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        refreshScroll()
-      })
-    }
-  })
-}
-
-/* ========================================
   ANIMATION LIFECYCLE
 ======================================== */
 
@@ -720,8 +623,6 @@ function refreshScroll() {
 
 onMounted(async () => {
   themeReady.value = true
-
-  openArchiveFromHash()
 
   pointerQuery = window.matchMedia(
     '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
@@ -1099,9 +1000,9 @@ onBeforeUnmount(() => {
                     </p>
 
                     <!--
-                      Unified with the toolkit / archive tech lists:
-                      same .skill-tokens / .token-icon markup so icon
-                      size and pill styling matches everywhere.
+                      Uses the same .skill-tokens / .token-icon markup
+                      as the toolkit section, so icon size and pill
+                      styling matches everywhere.
                     -->
                     <ul
                       class="tech-list skill-tokens"
@@ -1237,112 +1138,6 @@ onBeforeUnmount(() => {
               </article>
             </div>
           </div>
-        </div>
-
-        <!-- ==================================
-            MORE PROJECTS — HIDDEN UNTIL ASKED FOR
-        =================================== -->
-
-        <div class="archive-toggle-wrap" data-reveal>
-          <button
-            type="button"
-            class="archive-toggle"
-            :aria-expanded="archiveOpen"
-            aria-controls="more-projects-panel"
-            @click="toggleArchive"
-          >
-            <span class="archive-toggle-label">
-              {{
-                archiveOpen
-                  ? 'Hide other projects'
-                  : `See ${archive.length} other projects`
-              }}
-            </span>
-
-            <span
-              class="archive-toggle-icon"
-              :class="{ 'is-open': archiveOpen }"
-              aria-hidden="true"
-            >
-              ↓
-            </span>
-          </button>
-
-          <Transition
-            name="archive-fade"
-            @after-enter="refreshScroll"
-            @after-leave="refreshScroll"
-          >
-            <div
-              v-if="archiveOpen"
-              id="more-projects-panel"
-              class="archive-panel"
-              role="region"
-              aria-label="More projects"
-            >
-              <div class="archive-list">
-                <details
-                  v-for="(project, index) in archive"
-                  :id="`archive-${archiveSlug(project.title)}`"
-                  :key="project.title"
-                  class="archive-item"
-                  @toggle="refreshScroll"
-                >
-                  <summary class="archive-row">
-                    <span class="archive-index mono">
-                      {{ String(index + 4).padStart(2, '0') }}
-                    </span>
-
-                    <span class="archive-title">
-                      <span class="archive-name">
-                        {{ project.title }}
-                      </span>
-
-                      <span class="archive-category">
-                        {{ project.category }}
-                      </span>
-                    </span>
-
-                    <span class="archive-period mono">
-                      {{ project.period }}
-                    </span>
-
-                    <span class="archive-plus" aria-hidden="true">
-                      +
-                    </span>
-                  </summary>
-
-                  <div class="archive-expanded">
-                    <span class="mono muted">
-                      BUILT WITH
-                    </span>
-
-                    <ul
-                      class="skill-tokens archive-stack"
-                      :aria-label="`${project.title} technologies`"
-                    >
-                      <li
-                        v-for="tech in project.stack"
-                        :key="tech"
-                      >
-                        <span
-                          v-if="techIconUrl(tech)"
-                          class="token-icon"
-                          :style="{ '--tech-icon': `url('${techIconUrl(tech)}')` }"
-                          aria-hidden="true"
-                        />
-                        <span v-else class="token-icon token-icon-initial" aria-hidden="true">
-                          {{ techInitials(tech) }}
-                        </span>
-
-                        {{ tech }}
-                      </li>
-                    </ul>
-                  </div>
-                </details>
-              </div>
-            </div>
-          </Transition>
         </div>
       </section>
 

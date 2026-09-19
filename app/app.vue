@@ -923,9 +923,9 @@ onBeforeUnmount(() => {
 
           <div class="hero-intro">
             <p>
-              I'm Ralph Laurence C. Sayo, a fourth-year BS Information
-              Technology student who builds web and mobile applications —
-              and edits posters, photos, and videos on the side.
+              "I'm Ralph Laurence C. Sayo — a fourth-year BS Information Technology
+               student who builds full-stack web and mobile applications.
+                GraphiScan, my capstone, pushed me to train and deploy a real machine learning model from scratch."
             </p>
 
             <a class="text-link" href="#work">

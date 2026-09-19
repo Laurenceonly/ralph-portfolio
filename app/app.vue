@@ -33,7 +33,7 @@ useHead({
     {
       name: 'description',
       content:
-        'Portfolio of Ralph Laurence C. Sayo — a full-stack and mobile developer and freelance visual editor. Projects in web, mobile, and AI, including the GraphiScan dysgraphia-screening capstone.',
+        'Portfolio of Ralph Laurence C. Sayo — a full-stack and mobile developer. Projects in web, mobile, and AI, including the GraphiScan dysgraphia-screening capstone.',
     },
     { name: 'theme-color', content: '#0e1012' },
 
@@ -891,7 +891,7 @@ onBeforeUnmount(() => {
 
         <p class="eyebrow hero-eyebrow">
           <span class="status-dot" aria-hidden="true"></span>
-          Full-Stack Web &amp; Mobile Developer · Freelance Visual Editor
+          Full-Stack Web &amp; Mobile Developer 
         </p>
 
         <h1

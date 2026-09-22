@@ -28,12 +28,12 @@ useHead({
   htmlAttrs: {
     lang: 'en',
   },
-  title: 'Ralph Laurence Sayo — Full-Stack & Mobile Developer',
+  title: 'Ralph Laurence Sayo - Full-Stack & Mobile Developer',
   meta: [
     {
       name: 'description',
       content:
-        'Portfolio of Ralph Laurence C. Sayo — a full-stack and mobile developer. Projects in web, mobile, and AI, including the GraphiScan dysgraphia-screening capstone.',
+        'Portfolio of Ralph Laurence C. Sayo, a full-stack and mobile developer showcasing GraphiScan, an AI-assisted dysgraphia-screening capstone.',
     },
     { name: 'theme-color', content: '#0e1012' },
 
@@ -42,31 +42,28 @@ useHead({
     { property: 'og:type', content: 'website' },
     {
       property: 'og:title',
-      content: 'Ralph Laurence Sayo — Full-Stack & Mobile Developer',
+      content: 'Ralph Laurence Sayo - Full-Stack & Mobile Developer',
     },
     {
       property: 'og:description',
       content:
-        'Full-stack and mobile developer and freelance visual editor. Projects in web, mobile, and AI, including the GraphiScan dysgraphia-screening capstone.',
+        'Full-stack and mobile developer showcasing GraphiScan, an AI-assisted dysgraphia-screening capstone.',
     },
-    // TODO: replace with your real deployed domain once you have one.
-    { property: 'og:url', content: 'https://ralphlaurence.dev' },
-    // TODO: add a 1200x630 preview image at this path (public/images/og-cover.png).
-    { property: 'og:image', content: '/images/og-cover.png' },
+    {
+      property: 'og:url',
+      content: 'https://ralph-portfolio-tau.vercel.app',
+    },
 
-    // Twitter/X card — falls back to the Open Graph tags above if omitted,
-    // but summary_large_image needs to be set explicitly.
-    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:card', content: 'summary' },
     {
       name: 'twitter:title',
-      content: 'Ralph Laurence Sayo — Full-Stack & Mobile Developer',
+      content: 'Ralph Laurence Sayo - Full-Stack & Mobile Developer',
     },
     {
       name: 'twitter:description',
       content:
-        'Full-stack and mobile developer and freelance visual editor. Projects in web, mobile, and AI.',
+        'Full-stack and mobile developer showcasing the GraphiScan capstone project.',
     },
-    { name: 'twitter:image', content: '/images/og-cover.png' },
   ],
   link: [
     { rel: 'preconnect', href: 'https://cdn.jsdelivr.net' },
@@ -76,12 +73,11 @@ useHead({
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap',
     },
-    // TODO: replace with your real deployed domain once you have one.
-    { rel: 'canonical', href: 'https://ralphlaurence.dev' },
-    // TODO: drop a favicon.svg (and a 180x180 apple-touch-icon.png,
-    // both in /public) — browsers/tabs currently show no icon.
-    { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-    { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+    {
+      rel: 'canonical',
+      href: 'https://ralph-portfolio-tau.vercel.app',
+    },
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
   ],
 })
 
@@ -158,24 +154,21 @@ async function toggleTheme(event: MouseEvent) {
   PROJECT DATA
 ======================================== */
 
-const projects = [
-  {
-    id: 'graphiscan',
-    number: '01',
-    title: 'GraphiScan',
-    category: 'AI / CAPSTONE',
-    period: 'Fourth year',
-    subtitle: 'Screening dysgraphia through handwriting analysis.',
-    description:
-      'Deep learning models trained to catch patterns the eye misses.',
-    note:
-      'Presented as a screening research project, not a clinical diagnosis tool.',
-    stack: ['Python', 'Flask', 'Vue', 'PyTorch', 'OpenCV', 'TensorFlow'],
-    image: '/images/gscan1.png',
-    imageAlt: 'GraphiScan application screenshot',
-    tone: 'blue',
-  },
-]
+const project = {
+  id: 'graphiscan',
+  number: '01',
+  title: 'GraphiScan',
+  category: 'AI / CAPSTONE',
+  period: 'Fourth year',
+  subtitle: 'Screening dysgraphia through handwriting analysis.',
+  description:
+    'Deep learning models trained to catch patterns the eye misses.',
+  note:
+    'Presented as a screening research project, not a clinical diagnosis tool.',
+  stack: ['Python', 'Flask', 'Vue', 'PyTorch', 'OpenCV', 'TensorFlow'],
+  image: '/images/gscan1.png',
+  imageAlt: 'GraphiScan application screenshot',
+}
 
 const skillGroups = [
   {
@@ -240,9 +233,6 @@ const skillGroups = [
   CERTIFICATIONS
 ======================================== */
 
-// Fill in credentialUrl with a verify link if you have one
-// (e.g. Credly badge URL). Leave it empty to hide the link arrow.
-//
 // pdfUrl points to the certificate PDF itself, served from your
 // project's /public folder (e.g. put the files in
 // public/certificates/ and reference them as /certificates/x.pdf).
@@ -251,14 +241,12 @@ const certifications = [
     title: 'CCNA: Introduction to Networks',
     issuer: 'Davao Del Norte State College · Cisco Networking Academy',
     date: 'May 2025',
-    credentialUrl: '',
     pdfUrl: '/certificates/ccna1.pdf',
   },
   {
     title: 'CCNA: Switching, Routing, and Wireless Essentials',
     issuer: 'Davao Del Norte State College · Cisco Networking Academy',
     date: 'Dec 2025',
-    credentialUrl: '',
     pdfUrl: '/certificates/ccna2.pdf',
   },
 ]
@@ -307,7 +295,6 @@ const techIconSlugs: Record<string, string> = {
   Postman: 'postman',
   Figma: 'figma',
   'Cisco Networking': 'cisco',
-  NetBeans: 'apachenetbeanside',
   'Premiere Pro': 'adobepremierepro',
   Canva: 'canva',
   // No public brand mark available for CapCut on Simple Icons —
@@ -323,17 +310,6 @@ function techInitials(tech: string) {
   return tech.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase()
 }
 
-const pulsingChip = ref<string | null>(null)
-let pulseTimer: ReturnType<typeof setTimeout> | undefined
-
-function pulseChip(id: string) {
-  clearTimeout(pulseTimer)
-  pulsingChip.value = id
-  pulseTimer = setTimeout(() => {
-    pulsingChip.value = null
-  }, 900)
-}
-
 /* ========================================
   IMAGE FALLBACKS
 ======================================== */
@@ -345,45 +321,6 @@ function imageFailed(src: string) {
 
   void nextTick(() => {
     refreshScroll()
-  })
-}
-
-/* ========================================
-  FEATURED PROJECT CAROUSEL
-======================================== */
-
-const carouselTrack = ref<HTMLElement | null>(null)
-const activeProject = ref(0)
-let carouselScrollRaf: number | undefined
-
-function scrollToProject(index: number) {
-  const track = carouselTrack.value
-  if (!track) return
-
-  const target = Math.min(Math.max(index, 0), projects.length - 1)
-  const slide = track.children[target] as HTMLElement | undefined
-  if (!slide) return
-
-  track.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' })
-}
-
-function prevProject() {
-  scrollToProject(activeProject.value - 1)
-}
-
-function nextProject() {
-  scrollToProject(activeProject.value + 1)
-}
-
-function handleCarouselScroll() {
-  const track = carouselTrack.value
-  if (!track) return
-
-  if (carouselScrollRaf) cancelAnimationFrame(carouselScrollRaf)
-
-  carouselScrollRaf = requestAnimationFrame(() => {
-    const index = Math.round(track.scrollLeft / track.clientWidth)
-    activeProject.value = Math.min(Math.max(index, 0), projects.length - 1)
   })
 }
 
@@ -440,10 +377,8 @@ const activeSkillGroup = computed(
 
 const socialIconBase = 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons'
 
-// Rendered with the same CSS-mask technique as the brand icons above
-// (background-color: currentColor + mask), instead of an inline SVG
-// with `fill`, so the color and ink weight match exactly — no more
-// "greyer" mail icon next to the GitHub/Facebook/Instagram marks.
+// Inline SVG data URLs let the email icon switch to a confirmation mark
+// while using the same background-image treatment as the social icons.
 const mailIconUrl = `data:image/svg+xml,${encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.75 5.25h16.5c.966 0 1.75.784 1.75 1.75v10a1.75 1.75 0 0 1-1.75 1.75H3.75A1.75 1.75 0 0 1 2 17V7c0-.966.784-1.75 1.75-1.75Zm.4 1.5L12 12.15l7.85-5.4H4.15ZM20.5 8.9l-7.98 5.49a.9.9 0 0 1-1.04 0L3.5 8.9V17c0 .138.112.25.25.25h16.5a.25.25 0 0 0 .25-.25V8.9Z"/></svg>',
 )}`
@@ -763,9 +698,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   disposed = true
-  clearTimeout(pulseTimer)
   clearTimeout(emailCopyTimer)
-  if (carouselScrollRaf) cancelAnimationFrame(carouselScrollRaf)
   cleanupMotion?.()
 })
 </script>
@@ -937,7 +870,7 @@ onBeforeUnmount(() => {
       </section>
 
       <!-- ==================================
-          SELECTED WORK — SWIPEABLE CAROUSEL
+          FEATURED PROJECT
       =================================== -->
 
       <section
@@ -946,7 +879,7 @@ onBeforeUnmount(() => {
         aria-labelledby="work-title"
       >
         <div class="section-heading" data-reveal>
-          <p class="eyebrow">01 / SELECTED WORK</p>
+          <p class="eyebrow">01 / FEATURED PROJECT</p>
 
           <div class="section-heading-bottom">
             <h2 id="work-title">
@@ -955,190 +888,142 @@ onBeforeUnmount(() => {
             </h2>
 
             <p>
-              A selection of academic and capstone projects across
-              different platforms.
+              My capstone project combining machine learning with
+              a practical screening workflow.
             </p>
           </div>
         </div>
 
-        <div class="project-carousel-wrap" data-reveal>
-          <div
-            ref="carouselTrack"
-            class="project-carousel"
-            @scroll="handleCarouselScroll"
-          >
-            <div
-              v-for="(project, index) in projects"
-              :key="project.id"
-              class="project-slide"
-            >
-              <article
-                :id="project.id"
-                class="project-row"
-                :aria-labelledby="`${project.id}-title`"
+        <article
+          :id="project.id"
+          class="project-row"
+          :aria-labelledby="`${project.id}-title`"
+          data-reveal
+        >
+          <div class="project-info">
+            <div class="project-meta mono">
+              <span>{{ project.number }} /</span>
+              <span>{{ project.category }}</span>
+              <span>{{ project.period }}</span>
+            </div>
+
+            <div class="project-heading">
+              <h3 :id="`${project.id}-title`">
+                {{ project.title }}
+              </h3>
+
+              <p class="project-subtitle">
+                {{ project.subtitle }}
+              </p>
+            </div>
+
+            <div class="project-copy">
+              <p class="project-description">
+                {{ project.description }}
+              </p>
+
+              <ul
+                class="tech-list skill-tokens"
+                :aria-label="`${project.title} technologies`"
               >
-                <div class="project-info">
-                  <div class="project-meta mono">
-                    <span>{{ project.number }} /</span>
-                    <span>{{ project.category }}</span>
-                    <span>{{ project.period }}</span>
-                  </div>
-
-                  <div class="project-heading">
-                    <h3 :id="`${project.id}-title`">
-                      {{ project.title }}
-                    </h3>
-
-                    <p class="project-subtitle">
-                      {{ project.subtitle }}
-                    </p>
-                  </div>
-
-                  <div class="project-copy">
-                    <p class="project-description">
-                      {{ project.description }}
-                    </p>
-
-                    <!--
-                      Uses the same .skill-tokens / .token-icon markup
-                      as the toolkit section, so icon size and pill
-                      styling matches everywhere.
-                    -->
-                    <ul
-                      class="tech-list skill-tokens"
-                      :aria-label="`${project.title} technologies`"
-                    >
-                      <li
-                        v-for="tech in project.stack"
-                        :key="tech"
-                        tabindex="0"
-                        role="button"
-                        :class="{ 'is-pulsing': pulsingChip === `${project.id}-${tech}` }"
-                        @click="pulseChip(`${project.id}-${tech}`)"
-                        @keydown.enter="pulseChip(`${project.id}-${tech}`)"
-                      >
-                        <span
-                          v-if="techIconUrl(tech)"
-                          class="token-icon"
-                          :style="{ '--tech-icon': `url('${techIconUrl(tech)}')` }"
-                          aria-hidden="true"
-                        />
-                        <span v-else class="token-icon token-icon-initial" aria-hidden="true">
-                          {{ techInitials(tech) }}
-                        </span>
-
-                        {{ tech }}
-                      </li>
-                    </ul>
-
-                    <p
-                      v-if="project.note"
-                      class="project-note"
-                    >
-                      {{ project.note }}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  class="project-stage"
-                  :class="`tone-${project.tone}`"
-                  @pointermove="movePreview"
-                  @pointerleave="resetPreview"
-                  @pointercancel="resetPreview"
+                <li
+                  v-for="tech in project.stack"
+                  :key="tech"
                 >
-                  <div class="stage-grid" aria-hidden="true"></div>
-                  <div class="stage-halo" aria-hidden="true"></div>
+                  <span
+                    v-if="techIconUrl(tech)"
+                    class="token-icon"
+                    :style="{ '--tech-icon': `url('${techIconUrl(tech)}')` }"
+                    aria-hidden="true"
+                  />
+                  <span v-else class="token-icon token-icon-initial" aria-hidden="true">
+                    {{ techInitials(tech) }}
+                  </span>
 
-                  <div class="stage-topline mono">
-                    <span class="stage-identity">
-                      <span class="window-dots" aria-hidden="true">
-                        <i></i>
-                        <i></i>
-                        <i></i>
-                      </span>
+                  {{ tech }}
+                </li>
+              </ul>
 
-                      {{ project.title.toUpperCase() }}
-                    </span>
-
-                    <span>
-                      {{ project.category.split(' / ')[0] }}
-                    </span>
-                  </div>
-
-                  <div
-                    class="project-image-wrap"
-                    role="region"
-                    :aria-label="`${project.title} screenshot`"
-                  >
-                    <img
-                      v-if="!failedImages[project.image]"
-                      class="project-image"
-                      :src="project.image"
-                      :alt="project.imageAlt"
-                      :loading="index === 0 ? 'eager' : 'lazy'"
-                      :fetchpriority="index === 0 ? 'high' : 'auto'"
-                      decoding="async"
-                      @load="refreshScroll"
-                      @error="imageFailed(project.image)"
-                    />
-
-                    <div v-else class="image-placeholder">
-                      <span
-                        class="placeholder-symbol"
-                        aria-hidden="true"
-                      >
-                        ↗
-                      </span>
-
-                      <span class="placeholder-title">
-                        {{ project.title }}
-                      </span>
-
-                      <span class="mono">
-                        SCREENSHOT UNAVAILABLE
-                      </span>
-                    </div>
-                  </div>
-
-                  <div class="stage-bottomline">
-                    <span class="mono">
-                      {{ project.stack.slice(0, 2).join(' + ') }}
-                    </span>
-
-                    <span class="mono" aria-hidden="true">
-                      ↗
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    class="stage-arrow stage-arrow-prev"
-                    :disabled="activeProject === 0"
-                    aria-label="Previous project"
-                    @click="prevProject"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="stage-arrow stage-arrow-next"
-                    :disabled="activeProject === projects.length - 1"
-                    aria-label="Next project"
-                    @click="nextProject"
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M9 18l6-6-6-6" />
-                    </svg>
-                  </button>
-                </div>
-              </article>
+              <p
+                v-if="project.note"
+                class="project-note"
+              >
+                {{ project.note }}
+              </p>
             </div>
           </div>
-        </div>
+
+          <div
+            class="project-stage"
+            @pointermove="movePreview"
+            @pointerleave="resetPreview"
+            @pointercancel="resetPreview"
+          >
+            <div class="stage-grid" aria-hidden="true"></div>
+            <div class="stage-halo" aria-hidden="true"></div>
+
+            <div class="stage-topline mono">
+              <span class="stage-identity">
+                <span class="window-dots" aria-hidden="true">
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </span>
+
+                {{ project.title.toUpperCase() }}
+              </span>
+
+              <span>
+                {{ project.category.split(' / ')[0] }}
+              </span>
+            </div>
+
+            <div
+              class="project-image-wrap"
+              role="region"
+              :aria-label="`${project.title} screenshot`"
+            >
+              <img
+                v-if="!failedImages[project.image]"
+                class="project-image"
+                :src="project.image"
+                :alt="project.imageAlt"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                @load="refreshScroll"
+                @error="imageFailed(project.image)"
+              />
+
+              <div v-else class="image-placeholder">
+                <span
+                  class="placeholder-symbol"
+                  aria-hidden="true"
+                >
+                  ↗
+                </span>
+
+                <span class="placeholder-title">
+                  {{ project.title }}
+                </span>
+
+                <span class="mono">
+                  SCREENSHOT UNAVAILABLE
+                </span>
+              </div>
+            </div>
+
+            <div class="stage-bottomline">
+              <span class="mono">
+                {{ project.stack.slice(0, 2).join(' + ') }}
+              </span>
+
+              <span class="mono" aria-hidden="true">
+                ↗
+              </span>
+            </div>
+          </div>
+        </article>
       </section>
 
       <!-- ==================================
@@ -1307,17 +1192,6 @@ onBeforeUnmount(() => {
                   </svg>
 
                   View certificate
-                </a>
-
-                <a
-                  v-if="cert.credentialUrl"
-                  class="credential-link"
-                  :href="cert.credentialUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  :aria-label="`View credential: ${cert.title}`"
-                >
-                  <span aria-hidden="true">↗</span>
                 </a>
               </div>
             </li>

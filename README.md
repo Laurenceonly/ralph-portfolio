@@ -1,6 +1,6 @@
 # Ralph Laurence — Developer Portfolio
 
-Personal portfolio site for **Ralph Laurence C. Sayo**, a fourth-year BSIT student. Built with Nuxt 3, showcasing academic and capstone projects, technical skills, certifications, and contact info.
+Personal portfolio site for **Ralph Laurence C. Sayo**, a fourth-year BSIT student. Built with Nuxt 4, showcasing the GraphiScan capstone project, technical skills, certifications, and contact information.
 
 🔗 https://ralph-portfolio-tau.vercel.app/
 
@@ -9,8 +9,7 @@ Personal portfolio site for **Ralph Laurence C. Sayo**, a fourth-year BSIT stude
 ## Features
 
 - Animated hero and scroll-triggered reveals (GSAP + ScrollTrigger)
-- Swipeable featured-project carousel (GraphiScan, CleftTune, Mindayo)
-- Expandable project archive with deep-linkable entries
+- Featured GraphiScan capstone project with its technology stack
 - Interactive skill explorer (Web / Mobile & AI / Foundations & Tools)
 - Certifications list with linked PDF certificates
 - Light/dark theme toggle with a circular view-transition animation
@@ -18,7 +17,7 @@ Personal portfolio site for **Ralph Laurence C. Sayo**, a fourth-year BSIT stude
 
 ## Tech Stack
 
-- [Nuxt 3](https://nuxt.com/) / Vue 3 (`<script setup>`, Composition API)
+- [Nuxt 4](https://nuxt.com/) / Vue 3 (`<script setup>`, Composition API)
 - [GSAP](https://gsap.com/) + ScrollTrigger for animation
 - [Simple Icons](https://simpleicons.org/) CDN for tech logos
 - Plain CSS with custom properties (no Tailwind/UI kit)
@@ -52,7 +51,7 @@ npm run preview
 ## Project Structure Notes
 
 - Certificate PDFs live in `public/certificates/` and are referenced by `pdfUrl` in the certifications data.
-- Project screenshots live in `public/images/` and are referenced by `image` in the projects data.
+- The GraphiScan screenshot lives in `public/images/` and is referenced by the `project` data in `app/app.vue`.
 - Fonts (Space Grotesk) and tech icons load from CDNs (`fonts.googleapis.com`, `cdn.jsdelivr.net`) — no local font files needed.
 
 ## Deployment

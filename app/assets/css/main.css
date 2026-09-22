@@ -15,10 +15,6 @@
   --header: rgb(14 16 18 / 82%);
   --chip: rgb(255 255 255 / 4%);
 
-  --project-stage: var(--surface);
-  --blue-stage: var(--project-stage);
-  --violet-stage: var(--project-stage);
-  --green-stage: var(--project-stage);
   --body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -171,18 +167,6 @@ summary {
 
 .eyebrow {
   text-transform: uppercase;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
 }
 
 .skip-link {
@@ -506,10 +490,6 @@ summary {
   gap: 16px;
 }
 
-.hero-lede .now-line {
-  margin: 0;
-}
-
 .hero-statement {
   font-size: clamp(24px, 2.5vw, 36px);
   line-height: 1.45;
@@ -615,89 +595,7 @@ summary {
 }
 
 /* ========================================
-   PROJECT CAROUSEL — SWIPEABLE, UNIFORM SLIDES
-======================================== */
-
-.project-carousel-wrap {
-  position: relative;
-  overflow: hidden;
-}
-
-.project-carousel {
-  display: flex;
-  width: 100%;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.project-carousel::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-.project-slide {
-  flex: 0 0 100%;
-  min-width: 0;
-  overflow: hidden;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-.stage-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 6;
-  transform: translateY(-50%);
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  flex: 0 0 auto;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: var(--header);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--text);
-  transition:
-    background 200ms ease,
-    border-color 200ms ease,
-    opacity 200ms ease;
-}
-
-.stage-arrow-prev {
-  left: 16px;
-}
-
-.stage-arrow-next {
-  right: 16px;
-}
-
-.stage-arrow svg {
-  width: 18px;
-  height: 18px;
-}
-
-.stage-arrow:disabled {
-  opacity: 0.25;
-  cursor: default;
-  pointer-events: none;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .stage-arrow:not(:disabled):hover {
-    background: var(--surface);
-    border-color: var(--muted);
-  }
-}
-
-/* ========================================
-   PROJECTS — UNIFORM LAYOUT (ALL SLIDES)
+   FEATURED PROJECT
 ======================================== */
 
 .project-row {
@@ -753,28 +651,6 @@ summary {
 
 .tech-list {
   margin: 18px 0 0;
-}
-
-.tech-list.skill-tokens li {
-  cursor: pointer;
-}
-
-.tech-list.skill-tokens li.is-pulsing {
-  animation: chip-pulse 420ms var(--ease-out);
-}
-
-@keyframes chip-pulse {
-  30% {
-    transform: scale(0.88);
-  }
-
-  60% {
-    transform: scale(1.08);
-  }
-
-  100% {
-    transform: scale(1);
-  }
 }
 
 .project-note {
@@ -949,188 +825,6 @@ summary {
    the page. */
 .skills-section .skill-explorer {
   margin-top: 0;
-}
-
-/* ========================================
-   MORE PROJECTS — TOGGLE + PANEL
-   (Folded into Selected Work. Nothing here renders until the
-   visitor asks for it — these are the projects with no real
-   content/screenshots yet, so they stay opt-in. Styled as a pill
-   button — same shape/font as .view-certificate-btn — instead of
-   the old underlined text-link treatment.)
-======================================== */
-
-.archive-toggle-wrap {
-  margin-top: 32px;
-}
-
-.archive-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 12px 20px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.03em;
-  transition:
-    border-color 250ms ease,
-    color 250ms ease,
-    background 250ms ease;
-}
-
-.archive-toggle-label {
-  white-space: nowrap;
-}
-
-.archive-toggle-icon {
-  font-size: 14px;
-  line-height: 1;
-  transition:
-    transform 300ms var(--ease-out),
-    color 250ms ease;
-}
-
-.archive-toggle-icon.is-open {
-  transform: rotate(180deg);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .archive-toggle:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--chip);
-  }
-
-  .archive-toggle:hover .archive-toggle-icon {
-    color: var(--accent);
-  }
-}
-
-.archive-panel {
-  margin-top: 32px;
-  overflow: hidden;
-}
-
-.archive-fade-enter-active,
-.archive-fade-leave-active {
-  transition:
-    opacity 280ms ease,
-    transform 280ms var(--ease-out);
-}
-
-.archive-fade-enter-from,
-.archive-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-.archive-item {
-  border-top: 1px solid var(--line);
-}
-
-.archive-item:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
-.archive-row {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 110px 44px;
-  align-items: center;
-  gap: 24px;
-  padding: 28px 12px;
-  list-style: none;
-  transition:
-    padding 350ms var(--ease-out),
-    background 250ms ease;
-}
-
-.archive-row::-webkit-details-marker {
-  display: none;
-}
-
-.archive-title {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  min-width: 0;
-}
-
-.archive-name {
-  font-family: var(--display);
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.04em;
-}
-
-.archive-category {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.archive-index,
-.archive-period {
-  color: var(--muted);
-}
-
-.archive-period {
-  text-align: right;
-  font-size: 10px;
-}
-
-.archive-plus {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  font-size: 23px;
-  transition:
-    transform 300ms var(--ease-out),
-    color 200ms ease,
-    background 200ms ease;
-}
-
-.archive-item[open] .archive-plus {
-  transform: rotate(45deg);
-  background: var(--accent);
-  color: var(--bg);
-}
-
-.archive-expanded {
-  display: grid;
-  gap: 12px;
-  padding: 0 80px 30px;
-}
-
-.archive-expanded p {
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-.archive-stack {
-  margin: 0;
-}
-
-.archive-item[open] .archive-expanded {
-  animation: archive-enter 300ms var(--ease-out);
-}
-
-@keyframes archive-enter {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* ========================================
@@ -1488,32 +1182,9 @@ summary {
   }
 }
 
-.credential-link {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  flex: 0 0 auto;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  color: var(--accent);
-  font-size: 16px;
-  transition:
-    transform 250ms var(--ease-out),
-    border-color 250ms ease,
-    background 250ms ease;
-}
-
 @media (hover: hover) and (pointer: fine) {
   .credential-item:hover {
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
-  }
-
-  .credential-link:hover {
-    transform: rotate(45deg);
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--bg);
   }
 }
 
@@ -1843,15 +1514,6 @@ summary {
   .project-stage:hover .stage-halo {
     opacity: 1;
   }
-
-  .archive-row:hover {
-    padding-inline: 22px;
-    background: var(--chip);
-  }
-
-  .archive-row:hover .archive-name {
-    color: var(--accent);
-  }
 }
 
 /* ========================================
@@ -2163,58 +1825,8 @@ summary {
     min-height: 200px;
   }
 
-  .stage-arrow {
-    width: 38px;
-    height: 38px;
-  }
-
-  .stage-arrow-prev {
-    left: 10px;
-  }
-
-  .stage-arrow-next {
-    right: 10px;
-  }
-
   .skills-section {
     padding-block: 40px 80px;
-  }
-
-  .archive-toggle-wrap {
-    margin-top: 20px;
-  }
-
-  .archive-toggle {
-    gap: 8px;
-    padding: 10px 16px;
-    font-size: 10px;
-  }
-
-  .archive-row {
-    grid-template-columns: 24px minmax(0, 1fr) 36px;
-    gap: 12px;
-    padding: 24px 0;
-  }
-
-  .archive-name {
-    font-size: 18px;
-  }
-
-  .archive-category {
-    font-size: 12px;
-  }
-
-  .archive-period {
-    display: none;
-  }
-
-  .archive-plus {
-    width: 34px;
-    height: 34px;
-  }
-
-  .archive-expanded {
-    padding: 0 36px 26px;
   }
 
   .process-section {
@@ -2403,11 +2015,6 @@ summary {
   .theme-toggle-thumb svg {
     width: 11px;
     height: 11px;
-  }
-
-  .archive-toggle {
-    padding: 9px 14px;
-    font-size: 9px;
   }
 
   .contact-arrow {
